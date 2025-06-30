@@ -181,9 +181,10 @@
             border-radius: 9999px;
             font-size: 0.75rem;
             font-weight: 500;
+            display: inline-block;
         }
-        .status-reviewing, .status-banned { background-color: #FEF3C7; color: #92400E; }
-        .status-selling, .status-active { background-color: #D1FAE5; color: #065F46; }
+        .status-pending, .status-reviewing, .status-banned { background-color: #FEF3C7; color: #92400E; }
+        .status-processed, .status-selling, .status-active { background-color: #D1FAE5; color: #065F46; }
         .status-off { background-color: #E5E7EB; color: #4B5563; }
         
         .action-btn {
@@ -191,6 +192,7 @@
             border-radius: 0.25rem;
             transition: background-color 0.2s;
             margin: 0 0.2rem;
+            font-size: 0.875rem;
         }
     </style>
 </head>
@@ -263,6 +265,9 @@
                 <div>
                     <a href="#" class="sidebar-item active" data-page="listings"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>信息管理</a>
                     <a href="#" class="sidebar-item" data-page="users"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M15 21a6 6 0 00-9-5.197m0 0A5.975 5.975 0 0112 15a5.975 5.975 0 013-1.197z"></path></svg>用户管理</a>
+                    <a href="#" class="sidebar-item" data-page="intentions"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>意向管理</a>
+                    <a href="#" class="sidebar-item" data-page="data-maintenance"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7a8 8 0 0116 0M12 11a4 4 0 100-8 4 4 0 000 8z"></path></svg>数据维护</a>
+                    <a href="#" class="sidebar-item" data-page="reports"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6H8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"></path></svg>举报管理</a>
                     <a href="#" class="sidebar-item" data-page="settings"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>系统设置</a>
                 </div>
             </nav>
@@ -281,9 +286,7 @@
                                     <th class="p-3 text-left text-sm font-semibold text-gray-600">操作</th>
                                 </tr>
                             </thead>
-                            <tbody id="admin-listings-table" class="divide-y divide-gray-200">
-                                <!-- JS动态生成 -->
-                            </tbody>
+                            <tbody id="admin-listings-table" class="divide-y divide-gray-200"></tbody>
                         </table>
                     </div>
                 </div>
@@ -301,15 +304,52 @@
                                     <th class="p-3 text-left text-sm font-semibold text-gray-600">操作</th>
                                 </tr>
                             </thead>
-                            <tbody id="admin-users-table" class="divide-y divide-gray-200">
-                                <!-- JS动态生成 -->
-                            </tbody>
+                            <tbody id="admin-users-table" class="divide-y divide-gray-200"></tbody>
                         </table>
+                    </div>
+                </div>
+                 <div id="admin-content-reports" class="hidden">
+                    <h1 class="text-2xl font-bold text-gray-800 mb-6">举报管理</h1>
+                     <div class="bg-white rounded-lg shadow overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="p-3 text-left text-sm font-semibold text-gray-600">举报ID</th>
+                                    <th class="p-3 text-left text-sm font-semibold text-gray-600">被举报内容</th>
+                                    <th class="p-3 text-left text-sm font-semibold text-gray-600">举报理由</th>
+                                    <th class="p-3 text-left text-sm font-semibold text-gray-600">状态</th>
+                                    <th class="p-3 text-left text-sm font-semibold text-gray-600">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-reports-table" class="divide-y divide-gray-200"></tbody>
+                        </table>
+                    </div>
+                </div>
+                 <div id="admin-content-intentions" class="hidden">
+                    <h1 class="text-2xl font-bold text-gray-800 mb-6">意向管理</h1>
+                     <div class="bg-white rounded-lg shadow overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="p-3 text-left text-sm font-semibold text-gray-600">意向ID</th>
+                                    <th class="p-3 text-left text-sm font-semibold text-gray-600">用户</th>
+                                    <th class="p-3 text-left text-sm font-semibold text-gray-600">意向详情</th>
+                                    <th class="p-3 text-left text-sm font-semibold text-gray-600">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-intentions-table" class="divide-y divide-gray-200"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="admin-content-data-maintenance" class="hidden">
+                    <h1 class="text-2xl font-bold text-gray-800 mb-6">基础数据维护</h1>
+                    <div class="bg-white p-6 rounded-lg shadow space-y-6">
+                        <!-- JS动态生成类型和品牌维护区域 -->
                     </div>
                 </div>
                 <div id="admin-content-settings" class="hidden">
                      <h1 class="text-2xl font-bold text-gray-800 mb-6">系统设置</h1>
-                     <div class="space-y-6">
+                     <div class="space-y-8">
                         <!-- 常规设置 -->
                         <div class="bg-white p-6 rounded-lg shadow">
                             <h3 class="text-lg font-semibold text-gray-700 border-b pb-3 mb-4">常规设置</h3>
@@ -322,21 +362,6 @@
                                     <label for="admin-email" class="block text-sm font-medium text-gray-700">管理员邮箱</label>
                                     <input type="email" id="admin-email" value="admin@example.com" class="mt-1 block w-full md:w-1/2 form-input">
                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- 内容审核 -->
-                        <div class="bg-white p-6 rounded-lg shadow">
-                            <h3 class="text-lg font-semibold text-gray-700 border-b pb-3 mb-4">内容审核</h3>
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <p class="font-medium text-gray-700">新发布信息需要审核</p>
-                                    <p class="text-sm text-gray-500">开启后，所有用户新发布的信息都将进入“待审核”状态。</p>
-                                </div>
-                                <label for="approval-toggle" class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" id="approval-toggle" class="sr-only peer" checked>
-                                    <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                                </label>
                             </div>
                         </div>
 
@@ -418,477 +443,759 @@
          </div>
     </div>
 
+    <!-- 新增: 管理员编辑弹窗 -->
+    <div id="admin-edit-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col">
+            <div class="flex justify-between items-center p-4 border-b">
+                <h3 id="admin-edit-modal-title" class="text-xl font-bold">编辑信息</h3>
+                <span id="close-admin-edit-modal" class="text-2xl cursor-pointer hover:text-red-500">&times;</span>
+            </div>
+            <div id="admin-edit-form-container" class="p-6 overflow-y-auto">
+                <!-- JS 动态填充表单 -->
+            </div>
+        </div>
+    </div>
+
 <script>
-// --- 全局变量和状态 ---
-let isAdminView = false;
-let pageHistory = ['index'];
-let notificationTimeout;
-let currentIntentionLocations = [];
-let editingIntentionId = null;
+    document.addEventListener('DOMContentLoaded', () => {
+    // --- 全局变量和状态 ---
+    let isAdminView = false;
+    let pageHistory = ['index'];
+    let notificationTimeout;
+    let currentIntentionLocations = [];
+    let editingIntentionId = null;
 
-// --- 模拟数据 ---
-let mockListings = [
-    { id: 1, title: "三一 XCT25L5 - 80吨", tags: ["中介信息", "塔吊", "国五"], type: "汽车吊", brand: "三一", tonnage: 80, manufacture_date: "2025-06", post_date: "6天前发布", location: "江苏 苏州", price: "180.00", phone: "138-0001-0001", images: ["https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?q=80&w=800&h=600&fit=crop", "https://picsum.photos/seed/crane1-2/800/600", "https://picsum.photos/seed/crane1-3/800/600"], work_hours: 1500, mileage: 25000, contact_person: "王经理", status: 'selling'},
-    { id: 2, title: "中联 XCT25L5 - 50吨", tags: ["二手车商", "塔吊", "国五"], type: "汽车吊", brand: "中联重科", tonnage: 50, manufacture_date: "2025-06", post_date: "6天前发布", location: "山东 济南", price: "80.00", phone: "138-0002-0002", images: ["https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=800&h=600&fit=crop", "https://picsum.photos/seed/crane2-2/800/600"], work_hours: 2200, mileage: 31000, contact_person: "李老板", status: 'selling'},
-    { id: 3, title: "徐工 QY25K5 - 25吨", tags: ["车主直卖", "汽车吊", "国六"], type: "汽车吊", brand: "徐工", tonnage: 25, manufacture_date: "2024-01", post_date: "12天前发布", location: "河北 石家庄", price: "65.50", phone: "138-0003-0003", images: ["https://picsum.photos/id/1057/800/600", "https://picsum.photos/id/1058/800/600"], work_hours: 800, mileage: 12000, contact_person: "张师傅", status: 'selling'},
-    { id: 4, title: "三一 STC250 - 25吨", tags: ["车主直卖", "汽车吊", "国五"], type: "汽车吊", brand: "三一", tonnage: 25, manufacture_date: "2023-08", post_date: "20天前发布", location: "广东 广州", price: "55.00", phone: "138-0004-0004", images: ["https://picsum.photos/seed/crane4/600/400"], work_hours: 3500, mileage: 45000, contact_person: "陈先生", status: 'reviewing'},
-    { id: 5, title: "利勃海尔 LTM 1500 - 500吨", tags: ["中介信息", "履带吊", "国四"], type: "履带吊", brand: "利勃海尔", tonnage: 500, manufacture_date: "2022-01", post_date: "1月前发布", location: "上海 上海市", price: "1200.00", phone: "138-0005-0005", images: ["https://picsum.photos/seed/crane5/600/400"], work_hours: 5000, mileage: 0, contact_person: "赵总", status: 'off' },
-];
-let mockUsers = [
-    {id: 101, nickname: '吊车大王', avatar: 'https://picsum.photos/seed/avatar1/100/100', phone: '138-0001-0001', registration_date: '2023-05-10', status: 'active'},
-    {id: 102, nickname: '起重先锋', avatar: 'https://picsum.photos/seed/avatar2/100/100', phone: '138-0002-0002', registration_date: '2023-08-15', status: 'active'},
-    {id: 103, nickname: '工程机械', avatar: 'https://picsum.photos/seed/avatar3/100/100', phone: '138-0003-0003', registration_date: '2024-01-20', status: 'banned'},
-    {id: 104, nickname: '吊装小王子', avatar: 'https://picsum.photos/seed/avatar4/100/100', phone: '138-0004-0004', registration_date: '2024-03-11', status: 'active'},
-];
-let mockMyPosts = [
-    { id: 3, status: 'selling' },
-    { id: 4, status: 'reviewing' },
-    { id: 5, status: 'off' },
-];
-let mockFavorites = [1, 2];
-let mockIntentions = [
-    { id: 1, type: '汽车吊', brand: '徐工', tonnage: '25', emission: '国六', locations: [{ province: '河北省', city: '不限' }]},
-    { id: 2, type: '高空车', brand: '不限', tonnage: '20', emission: '不限', locations: [{ province: '山东省', city: '济南市' }, { province: '江苏省', city: '苏州市' }] }
-];
-const chinaLocations = {
-    "北京市": ["北京市"], "天津市": ["天津市"], "上海市": ["上海市"], "重庆市": ["重庆市"],
-    "河北省": ["石家庄市", "唐山市", "秦皇岛市", "邯郸市", "邢台市", "保定市", "张家口市", "承德市", "沧州市", "廊坊市", "衡水市"], "山西省": ["太原市", "大同市", "阳泉市", "长治市", "晋城市", "朔州市", "晋中市", "运城市", "忻州市", "临汾市", "吕梁市"], "辽宁省": ["沈阳市", "大连市", "鞍山市", "抚顺市", "本溪市", "丹东市", "锦州市", "营口市", "阜新市", "辽阳市", "盘锦市", "铁岭市", "朝阳市", "葫芦岛市"], "吉林省": ["长春市", "吉林市", "四平市", "辽源市", "通化市", "白山市", "松原市", "白城市", "延边朝鲜族自治州"], "黑龙江省": ["哈尔滨市", "齐齐哈尔市", "鸡西市", "鹤岗市", "双鸭山市", "大庆市", "伊春市", "佳木斯市", "七台河市", "牡丹江市", "黑河市", "绥化市", "大兴安岭地区"], "江苏省": ["南京市", "无锡市", "徐州市", "常州市", "苏州市", "南通市", "连云港市", "淮安市", "盐城市", "扬州市", "镇江市", "泰州市", "宿迁市"], "浙江省": ["杭州市", "宁波市", "温州市", "嘉兴市", "湖州市", "绍兴市", "金华市", "衢州市", "舟山市", "台州市", "丽水市"], "安徽省": ["合肥市", "芜湖市", "蚌埠市", "淮南市", "马鞍山市", "淮北市", "铜陵市", "安庆市", "黄山市", "滁州市", "阜阳市", "宿州市", "六安市", "亳州市", "池州市", "宣城市"], "福建省": ["福州市", "厦门市", "莆田市", "三明市", "泉州市", "漳州市", "南平市", "龙岩市", "宁德市"], "江西省": ["南昌市", "景德镇市", "萍乡市", "九江市", "新余市", "鹰潭市", "赣州市", "吉安市", "宜春市", "抚州市", "上饶市"], "山东省": ["济南市", "青岛市", "淄博市", "枣庄市", "东营市", "烟台市", "潍坊市", "济宁市", "泰安市", "威海市", "日照市", "临沂市", "德州市", "聊城市", "滨州市", "菏泽市"], "河南省": ["郑州市", "开封市", "洛阳市", "平顶山市", "安阳市", "鹤壁市", "新乡市", "焦作市", "濮阳市", "许昌市", "漯河市", "三门峡市", "南阳市", "商丘市", "信阳市", "周口市", "驻马店市"], "湖北省": ["武汉市", "黄石市", "十堰市", "宜昌市", "襄阳市", "鄂州市", "荆门市", "孝感市", "荆州市", "黄冈市", "咸宁市", "随州市", "恩施土家族苗族自治州"], "湖南省": ["长沙市", "株洲市", "湘潭市", "衡阳市", "邵阳市", "岳阳市", "常德市", "张家界市", "益阳市", "郴州市", "永州市", "怀化市", "娄底市", "湘西土家族苗族自治州"], "广东省": ["广州市", "韶关市", "深圳市", "珠海市", "汕头市", "佛山市", "江门市", "湛江市", "茂名市", "肇庆市", "惠州市", "梅州市", "汕尾市", "河源市", "阳江市", "清远市", "东莞市", "中山市", "潮州市", "揭阳市", "云浮市"], "海南省": ["海口市", "三亚市", "三沙市", "儋州市"], "四川省": ["成都市", "自贡市", "攀枝花市", "泸州市", "德阳市", "绵阳市", "广元市", "遂宁市", "内江市", "乐山市", "南充市", "眉山市", "宜宾市", "广安市", "达州市", "雅安市", "巴中市", "资阳市", "阿坝藏族羌族自治州", "甘孜藏族自治州", "凉山彝族自治州"], "贵州省": ["贵阳市", "六盘水市", "遵义市", "安顺市", "毕节市", "铜仁市", "黔西南布依族苗族自治州", "黔东南苗族侗族自治州", "黔南布依族苗族自治州"], "云南省": ["昆明市", "曲靖市", "玉溪市", "保山市", "昭通市", "丽江市", "普洱市", "临沧市", "楚雄彝族自治州", "红河哈尼族彝族自治州", "文山壮族苗族自治州", "西双版纳傣族自治州", "大理白族自治州", "德宏傣族景颇族自治州", "怒江傈僳族自治州", "迪庆藏族自治州"], "陕西省": ["西安市", "铜川市", "宝鸡市", "咸阳市", "渭南市", "延安市", "汉中市", "榆林市", "安康市", "商洛市"], "甘肃省": ["兰州市", "嘉峪关市", "金昌市", "白银市", "天水市", "武威市", "张掖市", "平凉市", "酒泉市", "庆阳市", "定西市", "陇南市", "临夏回族自治州", "甘南藏族自治州"], "青海省": ["西宁市", "海东市", "海北藏族自治州", "黄南藏族自治州", "海南藏族自治州", "果洛藏族自治州", "玉树藏族自治州", "海西蒙古族藏族自治州"], "台湾省": ["台北市", "新北市", "桃园市", "台中市", "台南市", "高雄市", "基隆市", "新竹市", "嘉义市"], "内蒙古自治区": ["呼和浩特市", "包头市", "乌海市", "赤峰市", "通辽市", "鄂尔多斯市", "呼伦贝尔市", "巴彦淖尔市", "乌兰察布市", "兴安盟", "锡林郭勒盟", "阿拉善盟"], "广西壮族自治区": ["南宁市", "柳州市", "桂林市", "梧州市", "北海市", "防城港市", "钦州市", "贵港市", "玉林市", "百色市", "贺州市", "河池市", "来宾市", "崇左市"], "西藏自治区": ["拉萨市", "日喀则市", "昌都市", "林芝市", "山南市", "那曲市", "阿里地区"], "宁夏回族自治区": ["银川市", "石嘴山市", "吴忠市", "固原市", "中卫市"], "新疆维吾尔自治区": ["乌鲁木齐市", "克拉玛依市", "吐鲁番市", "哈密市", "昌吉回族自治州", "博尔塔拉蒙古自治州", "巴音郭楞蒙古自治州", "阿克苏地区", "克孜勒苏柯尔克孜自治州", "喀什地区", "和田地区", "伊犁哈萨克自治州", "塔城地区", "阿勒泰地区"], "香港特别行政区": ["香港岛", "九龙", "新界"], "澳门特别行政区": ["澳门半岛", "氹仔", "路环"]
-};
-const equipmentData = {
-    '汽车吊': { brands: ['徐工', '三一', '中联重科', '利勃海尔', '多田野'], unit: '吨' },
-    '履带吊': { brands: ['徐工', '三一', '抚挖', '日立住友', '德马格'], unit: '吨' },
-    '塔吊': { brands: ['中联重科', '永茂', '马尼托瓦克', '波坦', '科曼萨'], unit: '型号' },
-    '高空车': { brands: ['徐工', '吉尼', '星邦', 'JLG', '欧历胜'], unit: '米' },
-    '随车吊': { brands: ['石煤', '徐工', '古河', '帕尔菲格', '希尔博'], unit: '吨' },
-};
-const emissionOptions = ["不限", "国三", "国四", "国五", "国六"];
+    // --- 模拟数据 ---
+    let mockListings = [
+        { id: 1, title: "三一 XCT25L5 - 80吨", tags: ["中介信息", "塔吊", "国五"], type: "汽车吊", brand: "三一", tonnage: 80, manufacture_date: "2025-06", post_date: "6天前发布", location: "江苏 苏州", price: "180.00", phone: "138-0001-0001", images: ["https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?q=80&w=800&h=600&fit=crop", "https://picsum.photos/seed/crane1-2/800/600", "https://picsum.photos/seed/crane1-3/800/600"], work_hours: 1500, mileage: 25000, contact_person: "王经理", status: 'selling'},
+        { id: 2, title: "中联 XCT25L5 - 50吨", tags: ["二手车商", "塔吊", "国五"], type: "汽车吊", brand: "中联重科", tonnage: 50, manufacture_date: "2025-06", post_date: "6天前发布", location: "山东 济南", price: "80.00", phone: "138-0002-0002", images: ["https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=800&h=600&fit=crop", "https://picsum.photos/seed/crane2-2/800/600"], work_hours: 2200, mileage: 31000, contact_person: "李老板", status: 'selling'},
+        { id: 3, title: "徐工 QY25K5 - 25吨", tags: ["车主直卖", "汽车吊", "国六"], type: "汽车吊", brand: "徐工", tonnage: 25, manufacture_date: "2024-01", post_date: "12天前发布", location: "河北 石家庄", price: "65.50", phone: "138-0003-0003", images: ["https://picsum.photos/id/1057/800/600", "https://picsum.photos/id/1058/800/600"], work_hours: 800, mileage: 12000, contact_person: "张师傅", status: 'selling'},
+        { id: 4, title: "三一 STC250 - 25吨", tags: ["车主直卖", "汽车吊", "国五"], type: "汽车吊", brand: "三一", tonnage: 25, manufacture_date: "2023-08", post_date: "20天前发布", location: "广东 广州", price: "55.00", phone: "138-0004-0004", images: ["https://picsum.photos/seed/crane4/600/400"], work_hours: 3500, mileage: 45000, contact_person: "陈先生", status: 'reviewing'},
+        { id: 5, title: "利勃海尔 LTM 1500 - 500吨", tags: ["中介信息", "履带吊", "国四"], type: "履带吊", brand: "利勃海尔", tonnage: 500, manufacture_date: "2022-01", post_date: "1月前发布", location: "上海 上海市", price: "1200.00", phone: "138-0005-0005", images: ["https://picsum.photos/seed/crane5/600/400"], work_hours: 5000, mileage: 0, contact_person: "赵总", status: 'off' },
+    ];
+    let mockUsers = [
+        {id: 101, nickname: '吊车大王', avatar: 'https://picsum.photos/seed/avatar1/100/100', phone: '138-0001-0001', registration_date: '2023-05-10', status: 'active'},
+        {id: 102, nickname: '起重先锋', avatar: 'https://picsum.photos/seed/avatar2/100/100', phone: '138-0002-0002', registration_date: '2023-08-15', status: 'active'},
+        {id: 103, nickname: '工程机械', avatar: 'https://picsum.photos/seed/avatar3/100/100', phone: '138-0003-0003', registration_date: '2024-01-20', status: 'banned'},
+        {id: 104, nickname: '吊装小王子', avatar: 'https://picsum.photos/seed/avatar4/100/100', phone: '138-0004-0004', registration_date: '2024-03-11', status: 'active'},
+    ];
+    let mockReports = [
+        { id: 1, listingId: 4, reason: '虚假信息', status: 'pending' },
+        { id: 2, listingId: 1, reason: '车辆已售', status: 'processed' },
+        { id: 3, listingId: 5, reason: '价格与描述不符', status: 'pending' },
+    ];
+    let mockMyPosts = [
+        { id: 3, status: 'selling' },
+        { id: 4, status: 'reviewing' },
+        { id: 5, status: 'off' },
+    ];
+    let mockFavorites = [1, 2];
+    let mockIntentions = [
+        { id: 1, userId: 101, type: '汽车吊', brand: '徐工', tonnage: '25', emission: '国六', locations: [{ province: '河北省', city: '不限' }]},
+        { id: 2, userId: 102, type: '高空车', brand: '不限', tonnage: '20', emission: '不限', locations: [{ province: '山东省', city: '济南市' }, { province: '江苏省', city: '苏州市' }] },
+        { id: 3, userId: 101, type: '履带吊', brand: '三一', tonnage: '100', emission: '不限', locations: [{ province: '广东省', city: '不限' }]},
+    ];
+    const chinaLocations = {
+        "北京市": ["北京市"], "天津市": ["天津市"], "上海市": ["上海市"], "重庆市": ["重庆市"],
+        "河北省": ["石家庄市", "唐山市", "秦皇岛市", "邯郸市", "邢台市", "保定市", "张家口市", "承德市", "沧州市", "廊坊市", "衡水市"], "山西省": ["太原市", "大同市", "阳泉市", "长治市", "晋城市", "朔州市", "晋中市", "运城市", "忻州市", "临汾市", "吕梁市"], "辽宁省": ["沈阳市", "大连市", "鞍山市", "抚顺市", "本溪市", "丹东市", "锦州市", "营口市", "阜新市", "辽阳市", "盘锦市", "铁岭市", "朝阳市", "葫芦岛市"], "吉林省": ["长春市", "吉林市", "四平市", "辽源市", "通化市", "白山市", "松原市", "白城市", "延边朝鲜族自治州"], "黑龙江省": ["哈尔滨市", "齐齐哈尔市", "鸡西市", "鹤岗市", "双鸭山市", "大庆市", "伊春市", "佳木斯市", "七台河市", "牡丹江市", "黑河市", "绥化市", "大兴安岭地区"], "江苏省": ["南京市", "无锡市", "徐州市", "常州市", "苏州市", "南通市", "连云港市", "淮安市", "盐城市", "扬州市", "镇江市", "泰州市", "宿迁市"], "浙江省": ["杭州市", "宁波市", "温州市", "嘉兴市", "湖州市", "绍兴市", "金华市", "衢州市", "舟山市", "台州市", "丽水市"], "安徽省": ["合肥市", "芜湖市", "蚌埠市", "淮南市", "马鞍山市", "淮北市", "铜陵市", "安庆市", "黄山市", "滁州市", "阜阳市", "宿州市", "六安市", "亳州市", "池州市", "宣城市"], "福建省": ["福州市", "厦门市", "莆田市", "三明市", "泉州市", "漳州市", "南平市", "龙岩市", "宁德市"], "江西省": ["南昌市", "景德镇市", "萍乡市", "九江市", "新余市", "鹰潭市", "赣州市", "吉安市", "宜春市", "抚州市", "上饶市"], "山东省": ["济南市", "青岛市", "淄博市", "枣庄市", "东营市", "烟台市", "潍坊市", "济宁市", "泰安市", "威海市", "日照市", "临沂市", "德州市", "聊城市", "滨州市", "菏泽市"], "河南省": ["郑州市", "开封市", "洛阳市", "平顶山市", "安阳市", "鹤壁市", "新乡市", "焦作市", "濮阳市", "许昌市", "漯河市", "三门峡市", "南阳市", "商丘市", "信阳市", "周口市", "驻马店市"], "湖北省": ["武汉市", "黄石市", "十堰市", "宜昌市", "襄阳市", "鄂州市", "荆门市", "孝感市", "荆州市", "黄冈市", "咸宁市", "随州市", "恩施土家族苗族自治州"], "湖南省": ["长沙市", "株洲市", "湘潭市", "衡阳市", "邵阳市", "岳阳市", "常德市", "张家界市", "益阳市", "郴州市", "永州市", "怀化市", "娄底市", "湘西土家族苗族自治州"], "广东省": ["广州市", "韶关市", "深圳市", "珠海市", "汕头市", "佛山市", "江门市", "湛江市", "茂名市", "肇庆市", "惠州市", "梅州市", "汕尾市", "河源市", "阳江市", "清远市", "东莞市", "中山市", "潮州市", "揭阳市", "云浮市"], "海南省": ["海口市", "三亚市", "三沙市", "儋州市"], "四川省": ["成都市", "自贡市", "攀枝花市", "泸州市", "德阳市", "绵阳市", "广元市", "遂宁市", "内江市", "乐山市", "南充市", "眉山市", "宜宾市", "广安市", "达州市", "雅安市", "巴中市", "资阳市", "阿坝藏族羌族自治州", "甘孜藏族自治州", "凉山彝族自治州"], "贵州省": ["贵阳市", "六盘水市", "遵义市", "安顺市", "毕节市", "铜仁市", "黔西南布依族苗族自治州", "黔东南苗族侗族自治州", "黔南布依族苗族自治州"], "云南省": ["昆明市", "曲靖市", "玉溪市", "保山市", "昭通市", "丽江市", "普洱市", "临沧市", "楚雄彝族自治州", "红河哈尼族彝族自治州", "文山壮族苗族自治州", "西双版纳傣族自治州", "大理白族自治州", "德宏傣族景颇族自治州", "怒江傈僳族自治州", "迪庆藏族自治州"], "陕西省": ["西安市", "铜川市", "宝鸡市", "咸阳市", "渭南市", "延安市", "汉中市", "榆林市", "安康市", "商洛市"], "甘肃省": ["兰州市", "嘉峪关市", "金昌市", "白银市", "天水市", "武威市", "张掖市", "平凉市", "酒泉市", "庆阳市", "定西市", "陇南市", "临夏回族自治州", "甘南藏族自治州"], "青海省": ["西宁市", "海东市", "海北藏族自治州", "黄南藏族自治州", "海南藏族自治州", "果洛藏族自治州", "玉树藏族自治州", "海西蒙古族藏族自治州"], "台湾省": ["台北市", "新北市", "桃园市", "台中市", "台南市", "高雄市", "基隆市", "新竹市", "嘉义市"], "内蒙古自治区": ["呼和浩特市", "包头市", "乌海市", "赤峰市", "通辽市", "鄂尔多斯市", "呼伦贝尔市", "巴彦淖尔市", "乌兰察布市", "兴安盟", "锡林郭勒盟", "阿拉善盟"], "广西壮族自治区": ["南宁市", "柳州市", "桂林市", "梧州市", "北海市", "防城港市", "钦州市", "贵港市", "玉林市", "百色市", "贺州市", "河池市", "来宾市", "崇左市"], "西藏自治区": ["拉萨市", "日喀则市", "昌都市", "林芝市", "山南市", "那曲市", "阿里地区"], "宁夏回族自治区": ["银川市", "石嘴山市", "吴忠市", "固原市", "中卫市"], "新疆维吾尔自治区": ["乌鲁木齐市", "克拉玛依市", "吐鲁番市", "哈密市", "昌吉回族自治州", "博尔塔拉蒙古自治州", "巴音郭楞蒙古自治州", "阿克苏地区", "克孜勒苏柯尔克孜自治州", "喀什地区", "和田地区", "伊犁哈萨克自治州", "塔城地区", "阿勒泰地区"], "香港特别行政区": ["香港岛", "九龙", "新界"], "澳门特别行政区": ["澳门半岛", "氹仔", "路环"]
+    };
+    let equipmentData = {
+        '汽车吊': { brands: ['徐工', '三一', '中联重科', '利勃海尔', '多田野'], unit: '吨' },
+        '履带吊': { brands: ['徐工', '三一', '抚挖', '日立住友', '德马格'], unit: '吨' },
+        '塔吊': { brands: ['中联重科', '永茂', '马尼托瓦克', '波坦', '科曼萨'], unit: '型号' },
+        '高空车': { brands: ['徐工', '吉尼', '星邦', 'JLG', '欧历胜'], unit: '米' },
+        '随车吊': { brands: ['石煤', '徐工', '古河', '帕尔菲格', '希尔博'], unit: '吨' },
+    };
+    const emissionOptions = ["不限", "国三", "国四", "国五", "国六"];
 
-// --- DOM 元素 ---
-const viewToggleBtn = document.getElementById('view-toggle-btn');
-const userView = document.getElementById('user-view');
-const adminView = document.getElementById('admin-view');
-const adminSidebarItems = document.querySelectorAll('.sidebar-item');
-const adminContentPanels = {
-    listings: document.getElementById('admin-content-listings'),
-    users: document.getElementById('admin-content-users'),
-    settings: document.getElementById('admin-content-settings'),
-};
-const adminListingsTable = document.getElementById('admin-listings-table');
-const adminUsersTable = document.getElementById('admin-users-table');
+    // --- DOM 元素 ---
+    const viewToggleBtn = document.getElementById('view-toggle-btn');
+    const userView = document.getElementById('user-view');
+    const adminView = document.getElementById('admin-view');
+    const adminSidebarItems = document.querySelectorAll('.sidebar-item');
+    const adminContentPanels = {
+        listings: document.getElementById('admin-content-listings'),
+        users: document.getElementById('admin-content-users'),
+        reports: document.getElementById('admin-content-reports'),
+        settings: document.getElementById('admin-content-settings'),
+        'data-maintenance': document.getElementById('admin-content-data-maintenance'),
+        intentions: document.getElementById('admin-content-intentions'),
+    };
+    const adminListingsTable = document.getElementById('admin-listings-table');
+    const adminUsersTable = document.getElementById('admin-users-table');
+    const adminReportsTable = document.getElementById('admin-reports-table');
+    const adminIntentionsTable = document.getElementById('admin-intentions-table');
+    const adminEditModal = document.getElementById('admin-edit-modal');
 
-// 用户端 DOM
-const screenElement = document.getElementById('screen');
-const pages = document.querySelectorAll('.page');
-const tabItems = document.querySelectorAll('.tab-item');
-const navBar = document.getElementById('nav-bar');
-const navTitle = document.getElementById('nav-title');
-const backButton = document.getElementById('back-button');
-const callModal = document.getElementById('call-modal');
-const cancelCallBtn = document.getElementById('cancel-call');
-const confirmCallBtn = document.getElementById('confirm-call');
-const confirmModal = document.getElementById('confirm-modal');
-const confirmModalText = document.getElementById('confirm-modal-text');
-const cancelConfirmBtn = document.getElementById('cancel-confirm');
-const confirmActionBtn = document.getElementById('confirm-action');
-const imageLightbox = document.getElementById('image-lightbox');
-const lightboxImage = document.getElementById('lightbox-image');
-const closeLightboxBtn = document.getElementById('close-lightbox');
-const mainTabBar = document.getElementById('tab-bar');
-const detailActionBar = document.getElementById('detail-action-bar');
-const intentionModal = document.getElementById('intention-modal');
-const notificationToast = document.getElementById('notification-toast');
-const notificationText = document.getElementById('notification-text');
+    // 用户端 DOM
+    const screenElement = document.getElementById('screen');
+    const pages = document.querySelectorAll('.page');
+    const tabItems = document.querySelectorAll('.tab-item');
+    const navBar = document.getElementById('nav-bar');
+    const navTitle = document.getElementById('nav-title');
+    const backButton = document.getElementById('back-button');
+    const callModal = document.getElementById('call-modal');
+    const cancelCallBtn = document.getElementById('cancel-call');
+    const confirmCallBtn = document.getElementById('confirm-call');
+    const confirmModal = document.getElementById('confirm-modal');
+    const confirmModalText = document.getElementById('confirm-modal-text');
+    const cancelConfirmBtn = document.getElementById('cancel-confirm');
+    const confirmActionBtn = document.getElementById('confirm-action');
+    const imageLightbox = document.getElementById('image-lightbox');
+    const lightboxImage = document.getElementById('lightbox-image');
+    const closeLightboxBtn = document.getElementById('close-lightbox');
+    const mainTabBar = document.getElementById('tab-bar');
+    const detailActionBar = document.getElementById('detail-action-bar');
+    const intentionModal = document.getElementById('intention-modal');
+    const notificationToast = document.getElementById('notification-toast');
+    const notificationText = document.getElementById('notification-text');
 
-// --- 视图切换和管理端逻辑 ---
-function toggleView() {
-    isAdminView = !isAdminView;
-    userView.classList.toggle('hidden', isAdminView);
-    adminView.classList.toggle('hidden', !isAdminView);
-    viewToggleBtn.textContent = isAdminView ? '切换到用户视图' : '切换到管理员视图';
-    
-    if (isAdminView) {
-        renderAdminContent('listings');
-    }
-}
-
-function renderAdminContent(page) {
-    // 高亮侧边栏
-    adminSidebarItems.forEach(item => {
-        item.classList.toggle('active', item.dataset.page === page);
-    });
-    // 显示对应内容面板
-    for (const key in adminContentPanels) {
-        adminContentPanels[key].classList.toggle('hidden', key !== page);
-    }
-    // 渲染内容
-    if (page === 'listings') {
-        renderListingsManagement();
-    } else if (page === 'users') {
-        renderUserManagement();
-    }
-}
-
-function renderListingsManagement() {
-    if (!adminListingsTable) return;
-    adminListingsTable.innerHTML = '';
-
-    const statusMap = { selling: '已上架', reviewing: '待审核', off: '已下架' };
-    const statusColorMap = { selling: 'status-selling', reviewing: 'status-reviewing', off: 'status-off' };
-
-    mockListings.forEach(item => {
-        const tr = document.createElement('tr');
-        tr.className = "hover:bg-gray-50";
-        tr.innerHTML = `
-            <td class="p-3 text-sm text-gray-700">#${String(item.id).padStart(5, '0')}</td>
-            <td class="p-3 text-sm text-gray-700">${item.title}</td>
-            <td class="p-3 text-sm text-gray-700">${item.price} 万</td>
-            <td class="p-3 text-sm"><span class="status-badge ${statusColorMap[item.status]}">${statusMap[item.status]}</span></td>
-            <td class="p-3 text-sm">
-                ${item.status === 'reviewing' ? `
-                    <button class="action-btn text-green-600 hover:bg-green-100" data-action="approve" data-id="${item.id}">通过</button>
-                    <button class="action-btn text-red-600 hover:bg-red-100" data-action="reject" data-id="${item.id}">驳回</button>
-                ` : ''}
-                <button class="action-btn text-blue-600 hover:bg-blue-100" data-action="edit" data-id="${item.id}">编辑</button>
-                <button class="action-btn text-gray-600 hover:bg-gray-100" data-action="delete" data-id="${item.id}">删除</button>
-            </td>
-        `;
-        adminListingsTable.appendChild(tr);
-    });
-
-    adminListingsTable.querySelectorAll('.action-btn').forEach(btn => {
-        btn.addEventListener('click', handleListingAction);
-    });
-}
-
-function renderUserManagement() {
-    if (!adminUsersTable) return;
-    adminUsersTable.innerHTML = '';
-
-    const statusMap = { active: '正常', banned: '已封禁' };
-    const statusColorMap = { active: 'status-active', banned: 'status-banned' };
-
-    mockUsers.forEach(user => {
-        const tr = document.createElement('tr');
-        tr.className = "hover:bg-gray-50";
-        tr.innerHTML = `
-            <td class="p-3 text-sm text-gray-700">#${user.id}</td>
-            <td class="p-3 text-sm text-gray-700">
-                <div class="flex items-center">
-                    <img src="${user.avatar}" class="w-8 h-8 rounded-full object-cover mr-3">
-                    <span>${user.nickname}</span>
-                </div>
-            </td>
-            <td class="p-3 text-sm text-gray-700">${user.phone}</td>
-            <td class="p-3 text-sm text-gray-700">${user.registration_date}</td>
-            <td class="p-3 text-sm"><span class="status-badge ${statusColorMap[user.status]}">${statusMap[user.status]}</span></td>
-            <td class="p-3 text-sm">
-                ${user.status === 'active' 
-                    ? `<button class="action-btn text-red-600 hover:bg-red-100" data-action="ban" data-id="${user.id}">封禁</button>`
-                    : `<button class="action-btn text-green-600 hover:bg-green-100" data-action="unban" data-id="${user.id}">解封</button>`
-                }
-            </td>
-        `;
-        adminUsersTable.appendChild(tr);
-    });
-
-    adminUsersTable.querySelectorAll('.action-btn').forEach(btn => {
-        btn.addEventListener('click', handleUserAction);
-    });
-}
-
-function handleListingAction(e) {
-    const { action, id } = e.target.dataset;
-    const listing = mockListings.find(item => item.id === parseInt(id));
-    if (!listing) return;
-
-    switch(action) {
-        case 'approve':
-            listing.status = 'selling';
-            showNotification(`编号 #${id} 已审核通过并上架。`);
-            renderListingsManagement();
-            break;
-        case 'reject':
-            showConfirmModal(`确定要驳回编号 #${id} 吗?`, () => {
-                listing.status = 'off';
-                showNotification(`编号 #${id} 已被驳回。`);
-                renderListingsManagement();
-            });
-            break;
-        case 'edit':
-            showNotification(`正在跳转到编号 #${id} 的编辑页面...`);
-            setTimeout(() => {
-                toggleView();
-                navigateTo('post', '编辑信息', parseInt(id));
-            }, 500);
-            break;
-        case 'delete':
-            showConfirmModal(`确定要永久删除编号 #${id} 吗?`, () => {
-                mockListings = mockListings.filter(item => item.id !== parseInt(id));
-                showNotification(`编号 #${id} 已被删除。`);
-                renderListingsManagement();
-            });
-            break;
-    }
-}
-
-function handleUserAction(e) {
-    const { action, id } = e.target.dataset;
-    const user = mockUsers.find(u => u.id === parseInt(id));
-    if (!user) return;
-
-    if (action === 'ban') {
-        showConfirmModal(`确定要封禁用户 “${user.nickname}” 吗?`, () => {
-            user.status = 'banned';
-            showNotification(`用户 “${user.nickname}” 已被封禁。`);
-            renderUserManagement();
-        });
-    } else if (action === 'unban') {
-        user.status = 'active';
-        showNotification(`用户 “${user.nickname}” 已解封。`);
-        renderUserManagement();
-    }
-}
-
-
-// --- 通用辅助函数 ---
-function showNotification(text) {
-    if (!notificationToast || !notificationText) return;
-    notificationText.textContent = text;
-    notificationToast.classList.remove('opacity-0', '-translate-y-4');
-    clearTimeout(notificationTimeout);
-    notificationTimeout = setTimeout(() => {
-        notificationToast.classList.add('opacity-0', '-translate-y-4');
-    }, 2000);
-}
-function updateTime() {
-    const now = new Date();
-    document.getElementById('time').textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-}
-function populateSelect(selectElement, options) {
-    if (!selectElement) return;
-    selectElement.innerHTML = '';
-    options.forEach(option => {
-        const optionElement = document.createElement('option');
-        if (typeof option === 'object') {
-            optionElement.value = option.name;
-            optionElement.textContent = option.name;
+    // --- 通用辅助函数 ---
+    function showNotification(text, type = 'success') {
+        const toast = document.getElementById('notification-toast')
+        if (!toast) return;
+        toast.textContent = text;
+        if(type === 'error'){
+            toast.classList.add('bg-red-600');
         } else {
+            toast.classList.remove('bg-red-600');
+        }
+        toast.classList.remove('opacity-0', '-translate-y-4');
+        clearTimeout(notificationTimeout);
+        notificationTimeout = setTimeout(() => {
+            toast.classList.add('opacity-0', '-translate-y-4');
+        }, 2500);
+    }
+
+    function updateTime() {
+        const now = new Date();
+        document.getElementById('time').textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    }
+
+    function populateSelect(selectElement, options, selectedValue) {
+        if (!selectElement) return;
+        selectElement.innerHTML = '';
+        options.forEach(option => {
+            const optionElement = document.createElement('option');
             optionElement.value = option;
             optionElement.textContent = option;
-        }
-        selectElement.appendChild(optionElement);
-    });
-}
+            if (option === selectedValue) {
+                optionElement.selected = true;
+            }
+            selectElement.appendChild(optionElement);
+        });
+    }
 
-// --- 用户端导航逻辑 ---
-function showPage(pageId, title) {
-    pages.forEach(p => p.classList.remove('active'));
-    navBar.classList.add('hidden');
-    mainTabBar.classList.add('hidden');
-    detailActionBar.classList.add('hidden');
-    const targetPage = document.getElementById(`page-${pageId}`);
-    if (targetPage) {
-        targetPage.classList.add('active');
-        if (['index', 'post', 'profile'].includes(pageId)) {
-            mainTabBar.classList.remove('hidden');
+    // --- 用户端弹窗逻辑 ---
+    function showCallModal(phone) {
+        callModal.querySelector('p:first-child').textContent = phone || '138-8888-8888';
+        callModal.classList.remove('hidden');
+    }
+    function hideCallModal() { callModal.classList.add('hidden'); }
+    function showConfirmModal(text, onConfirm) {
+        confirmModalText.textContent = text;
+        confirmActionBtn.onclick = () => {
+            onConfirm();
+            hideConfirmModal();
+        };
+        confirmModal.classList.remove('hidden');
+    }
+    function hideConfirmModal() { confirmModal.classList.add('hidden'); }
+    function openLightbox(src) {
+        lightboxImage.src = src;
+        imageLightbox.classList.remove('hidden');
+    }
+    function closeLightbox() { imageLightbox.classList.add('hidden'); }
+    
+    function closeIntentionModal() {
+        intentionModal.classList.add('hidden');
+        editingIntentionId = null;
+    }
+    
+    function closeAdminEditModal() {
+        adminEditModal.classList.add('hidden');
+    }
+
+    function handleImageUpload(event, container, imageUrls = []) {
+        const previewsContainer = container.querySelector('.previews-container');
+        const uploadTrigger = container.querySelector('.upload-trigger');
+        
+        previewsContainer.querySelectorAll('.image-preview-item').forEach(item => item.remove());
+
+        const addPreview = (src) => {
+            const currentPreviews = previewsContainer.querySelectorAll('.image-preview-item').length;
+            if(currentPreviews >= 9) return;
+
+            const previewItem = document.createElement('div');
+            previewItem.className = 'w-full h-20 image-preview-item';
+            previewItem.innerHTML = `
+                <img src="${src}" class="w-full h-full object-cover rounded-md">
+                <div class="delete-preview-btn">×</div>
+            `;
+            previewsContainer.insertBefore(previewItem, uploadTrigger);
+            
+            previewItem.querySelector('.delete-preview-btn').addEventListener('click', () => {
+                previewItem.remove();
+                checkUploadLimit(container);
+            });
+        };
+
+        if (imageUrls.length > 0) {
+            imageUrls.forEach(url => addPreview(url));
         } else {
-            navBar.classList.remove('hidden');
-            navTitle.textContent = title || '详情';
-            if(pageId === 'detail') {
-                detailActionBar.classList.remove('hidden');
+             const files = event.target.files;
+             for (const file of files) {
+                 const reader = new FileReader();
+                 reader.onload = (e) => addPreview(e.target.result);
+                 reader.readAsDataURL(file);
+            }
+        }
+        
+        if(event.target) event.target.value = '';
+        checkUploadLimit(container);
+    }
+    function checkUploadLimit(container) {
+        const previewsContainer = container.querySelector('.previews-container');
+        const uploadTrigger = container.querySelector('.upload-trigger');
+        const currentPreviews = previewsContainer.querySelectorAll('.image-preview-item').length;
+        uploadTrigger.style.display = currentPreviews >= 9 ? 'none' : 'flex';
+    }
+
+    // --- 导航与页面渲染核心 ---
+    function navigateTo(pageId, title, data = null) {
+        pageHistory.push(pageId);
+        renderPage(pageId, null, data);
+        showPage(pageId, title);
+    }
+
+    function navigateBack() {
+        if (pageHistory.length > 1) {
+            pageHistory.pop();
+            const prevPageId = pageHistory[pageHistory.length - 1];
+            const prevPage = document.querySelector(`.tab-item[data-page="${prevPageId}"], .profile-menu > div[data-page="${prevPageId}"]`);
+            const prevTitle = prevPage ? (prevPage.querySelector('span') ? prevPage.querySelector('span').textContent : '详情') : '首页';
+            renderPage(prevPageId);
+            showPage(prevPageId, prevTitle);
+        }
+    }
+    function switchTab(pageId) {
+        pageHistory = [pageId];
+        renderPage(pageId);
+        showPage(pageId);
+    }
+
+    function showPage(pageId, title) {
+        pages.forEach(p => p.classList.remove('active'));
+        navBar.classList.add('hidden');
+        mainTabBar.classList.add('hidden');
+        detailActionBar.classList.add('hidden');
+        const targetPage = document.getElementById(`page-${pageId}`);
+        if (targetPage) {
+            targetPage.classList.add('active');
+            if (['index', 'post', 'profile'].includes(pageId)) {
+                mainTabBar.classList.remove('hidden');
+            } else {
+                navBar.classList.remove('hidden');
+                navTitle.textContent = title || '详情';
+                if(pageId === 'detail') {
+                    detailActionBar.classList.remove('hidden');
+                }
+            }
+        }
+        updateTabActive(pageId);
+        screenElement.scrollTop = 0;
+    }
+    
+    function updateTabActive(pageId) {
+        let isTab = false;
+        tabItems.forEach(item => {
+            const isActive = item.dataset.page === pageId;
+            item.classList.toggle('active', isActive);
+            if (isActive) isTab = true;
+        });
+        if (!isTab) {
+             tabItems.forEach(item => item.classList.remove('active'));
+        }
+    }
+    
+    function renderPage(pageId, container, data) {
+        const pageContainer = container || document.getElementById(`page-${pageId}`);
+        switch(pageId) {
+            case 'index': renderIndexPage(pageContainer); break;
+            case 'post': renderPostPage(pageContainer, data); break;
+            case 'profile': renderProfilePage(pageContainer); break;
+            case 'favorites': renderFavoritesPage(pageContainer); break;
+            case 'posts': renderPostsPage(pageContainer); break;
+            case 'intentions': renderIntentionsPage(pageContainer); break;
+            case 'report': renderReportPage(pageContainer); break;
+            case 'detail': renderDetailPage(data); break;
+        }
+    }
+
+    // --- 视图切换和管理端逻辑 ---
+    function toggleView() {
+        isAdminView = !isAdminView;
+        userView.classList.toggle('hidden', isAdminView);
+        adminView.classList.toggle('hidden', !isAdminView);
+        viewToggleBtn.textContent = isAdminView ? '切换到用户视图' : '切换到管理员视图';
+        
+        if (isAdminView) {
+            renderAdminContent('listings');
+        }
+    }
+
+    function renderAdminContent(page) {
+        adminSidebarItems.forEach(item => item.classList.remove('active'));
+        document.querySelector(`.sidebar-item[data-page="${page}"]`).classList.add('active');
+        
+        for (const key in adminContentPanels) {
+            adminContentPanels[key].classList.toggle('hidden', key !== page);
+        }
+        
+        switch (page) {
+            case 'listings': renderListingsManagement(); break;
+            case 'users': renderUserManagement(); break;
+            case 'reports': renderReportManagement(); break;
+            case 'settings': renderSettingsPage(); break;
+            case 'data-maintenance': renderDataMaintenancePage(); break;
+            case 'intentions': renderIntentionManagement(); break;
+        }
+    }
+
+    function renderListingsManagement() {
+        if (!adminListingsTable) return;
+        adminListingsTable.innerHTML = '';
+
+        const statusMap = { selling: '已上架', reviewing: '待审核', off: '已下架' };
+        const statusColorMap = { selling: 'status-selling', reviewing: 'status-reviewing', off: 'status-off' };
+
+        mockListings.forEach(item => {
+            const tr = document.createElement('tr');
+            tr.className = "hover:bg-gray-50";
+            tr.innerHTML = `
+                <td class="p-3 text-sm text-gray-700">#${String(item.id).padStart(5, '0')}</td>
+                <td class="p-3 text-sm text-gray-700">${item.title}</td>
+                <td class="p-3 text-sm text-gray-700">${item.price} 万</td>
+                <td class="p-3 text-sm"><span class="status-badge ${statusColorMap[item.status]}">${statusMap[item.status]}</span></td>
+                <td class="p-3 text-sm">
+                    ${item.status === 'reviewing' ? `
+                        <button class="action-btn text-green-600 hover:bg-green-100" data-action="approve" data-id="${item.id}">通过</button>
+                        <button class="action-btn text-red-600 hover:bg-red-100" data-action="reject" data-id="${item.id}">驳回</button>
+                    ` : ''}
+                    <button class="action-btn text-blue-600 hover:bg-blue-100" data-action="edit" data-id="${item.id}">编辑</button>
+                    <button class="action-btn text-gray-600 hover:bg-gray-100" data-action="delete" data-id="${item.id}">删除</button>
+                </td>
+            `;
+            adminListingsTable.appendChild(tr);
+        });
+
+        adminListingsTable.querySelectorAll('.action-btn').forEach(btn => {
+            btn.addEventListener('click', handleListingAction);
+        });
+    }
+
+    function renderUserManagement() {
+        if (!adminUsersTable) return;
+        adminUsersTable.innerHTML = '';
+
+        const statusMap = { active: '正常', banned: '已封禁' };
+        const statusColorMap = { active: 'status-active', banned: 'status-banned' };
+
+        mockUsers.forEach(user => {
+            const tr = document.createElement('tr');
+            tr.className = "hover:bg-gray-50";
+            tr.innerHTML = `
+                <td class="p-3 text-sm text-gray-700">#${user.id}</td>
+                <td class="p-3 text-sm text-gray-700">
+                    <div class="flex items-center">
+                        <img src="${user.avatar}" class="w-8 h-8 rounded-full object-cover mr-3">
+                        <span>${user.nickname}</span>
+                    </div>
+                </td>
+                <td class="p-3 text-sm text-gray-700">${user.phone}</td>
+                <td class="p-3 text-sm text-gray-700">${user.registration_date}</td>
+                <td class="p-3 text-sm"><span class="status-badge ${statusColorMap[user.status]}">${statusMap[user.status]}</span></td>
+                <td class="p-3 text-sm">
+                    ${user.status === 'active' 
+                        ? `<button class="action-btn text-red-600 hover:bg-red-100" data-action="ban" data-id="${user.id}">封禁</button>`
+                        : `<button class="action-btn text-green-600 hover:bg-green-100" data-action="unban" data-id="${user.id}">解封</button>`
+                    }
+                </td>
+            `;
+            adminUsersTable.appendChild(tr);
+        });
+
+        adminUsersTable.querySelectorAll('.action-btn').forEach(btn => {
+            btn.addEventListener('click', handleUserAction);
+        });
+    }
+
+    function renderReportManagement() {
+        if (!adminReportsTable) return;
+        adminReportsTable.innerHTML = '';
+        
+        const statusMap = { pending: '待处理', processed: '已处理' };
+        const statusColorMap = { pending: 'status-pending', processed: 'status-processed' };
+
+        mockReports.forEach(report => {
+            const listing = mockListings.find(l => l.id === report.listingId);
+            if (!listing) return;
+
+            const tr = document.createElement('tr');
+            tr.className = "hover:bg-gray-50";
+            tr.innerHTML = `
+                <td class="p-3 text-sm text-gray-700">#${report.id}</td>
+                <td class="p-3 text-sm text-gray-700">${listing.title}</td>
+                <td class="p-3 text-sm text-gray-700">${report.reason}</td>
+                <td class="p-3 text-sm"><span class="status-badge ${statusColorMap[report.status]}">${statusMap[report.status]}</span></td>
+                <td class="p-3 text-sm">
+                     <button class="action-btn text-blue-600 hover:bg-blue-100" data-action="view" data-id="${listing.id}">查看车辆</button>
+                    ${report.status === 'pending' ? `<button class="action-btn text-green-600 hover:bg-green-100" data-action="process" data-id="${report.id}">标记已处理</button>` : ''}
+                </td>
+            `;
+            adminReportsTable.appendChild(tr);
+        });
+
+        adminReportsTable.querySelectorAll('.action-btn').forEach(btn => {
+            btn.addEventListener('click', handleReportAction);
+        });
+    }
+    
+    function renderIntentionManagement() {
+        const container = adminContentPanels.intentions;
+        if (!container) return;
+
+        container.innerHTML = `
+            <h1 class="text-2xl font-bold text-gray-800 mb-6">意向管理</h1>
+            <div class="bg-white p-4 rounded-lg shadow mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label for="filter-intention-type" class="block text-sm font-medium text-gray-700">设备类型</label>
+                        <select id="filter-intention-type" class="mt-1 block w-full form-select"></select>
+                    </div>
+                    <div>
+                        <label for="filter-intention-brand" class="block text-sm font-medium text-gray-700">品牌</label>
+                        <select id="filter-intention-brand" class="mt-1 block w-full form-select"></select>
+                    </div>
+                    <div>
+                        <label for="filter-intention-province" class="block text-sm font-medium text-gray-700">省份</label>
+                        <select id="filter-intention-province" class="mt-1 block w-full form-select"></select>
+                    </div>
+                    <div class="flex items-end space-x-2">
+                        <button id="apply-intention-filters" class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">筛选</button>
+                        <button id="reset-intention-filters" class="w-full bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600">重置</button>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="p-3 text-left text-sm font-semibold text-gray-600">意向ID</th>
+                            <th class="p-3 text-left text-sm font-semibold text-gray-600">用户</th>
+                            <th class="p-3 text-left text-sm font-semibold text-gray-600">意向详情</th>
+                            <th class="p-3 text-left text-sm font-semibold text-gray-600">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-intentions-table" class="divide-y divide-gray-200"></tbody>
+                </table>
+            </div>
+        `;
+
+        const typeSelect = document.getElementById('filter-intention-type');
+        const brandSelect = document.getElementById('filter-intention-brand');
+        const provinceSelect = document.getElementById('filter-intention-province');
+        const applyBtn = document.getElementById('apply-intention-filters');
+        const resetBtn = document.getElementById('reset-intention-filters');
+
+        // Populate filters
+        populateSelect(typeSelect, ['不限', ...Object.keys(equipmentData)]);
+        populateSelect(brandSelect, ['不限']);
+        populateSelect(provinceSelect, ['不限', ...Object.keys(chinaLocations)]);
+        
+        typeSelect.addEventListener('change', (e) => {
+            const selectedType = e.target.value;
+            if (selectedType === '不限') {
+                const allBrands = ["不限", ...new Set(Object.values(equipmentData).flatMap(type => type.brands))];
+                populateSelect(brandSelect, allBrands);
+            } else {
+                const brands = equipmentData[selectedType] ? ["不限", ...equipmentData[selectedType].brands] : ["不限"];
+                populateSelect(brandSelect, brands);
+            }
+        });
+
+        const applyFilters = () => {
+            let filteredIntentions = [...mockIntentions];
+
+            const type = typeSelect.value;
+            const brand = brandSelect.value;
+            const province = provinceSelect.value;
+
+            if (type !== '不限') {
+                filteredIntentions = filteredIntentions.filter(i => i.type === type);
+            }
+            if (brand !== '不限') {
+                filteredIntentions = filteredIntentions.filter(i => i.brand === brand);
+            }
+            if (province !== '不限') {
+                filteredIntentions = filteredIntentions.filter(i => i.locations.some(loc => loc.province === province));
+            }
+
+            renderIntentionTable(filteredIntentions);
+        };
+
+        applyBtn.addEventListener('click', applyFilters);
+
+        resetBtn.addEventListener('click', () => {
+            typeSelect.value = '不限';
+            provinceSelect.value = '不限';
+            typeSelect.dispatchEvent(new Event('change')); // to reset brand dropdown
+            brandSelect.value = '不限';
+            renderIntentionTable(mockIntentions);
+        });
+
+        // Initial render
+        renderIntentionTable(mockIntentions);
+    }
+
+    function renderIntentionTable(intentions) {
+        const tableBody = document.getElementById('admin-intentions-table');
+        if (!tableBody) return;
+        tableBody.innerHTML = '';
+
+        intentions.forEach(intention => {
+            const user = mockUsers.find(u => u.id === intention.userId);
+            const locationsText = intention.locations.map(loc => `${loc.province.replace(/省|市/, '')}-${loc.city.replace(/市/, '')}`).join(', ');
+
+            const tr = document.createElement('tr');
+            tr.className = "hover:bg-gray-50";
+            tr.innerHTML = `
+                <td class="p-3 text-sm text-gray-700">#${intention.id}</td>
+                <td class="p-3 text-sm text-gray-700">
+                    <div class="flex items-center">
+                        ${user ? `<img src="${user.avatar}" class="w-8 h-8 rounded-full object-cover mr-3"><span>${user.nickname}</span>` : '未知用户'}
+                    </div>
+                </td>
+                <td class="p-3 text-sm text-gray-700">
+                    <p><strong>类型:</strong> ${intention.type}</p>
+                    <p><strong>品牌:</strong> ${intention.brand}</p>
+                    <p><strong>规格:</strong> ${intention.tonnage || '不限'}</p>
+                    <p><strong>地区:</strong> ${locationsText}</p>
+                </td>
+                <td class="p-3 text-sm">
+                     <button class="action-btn text-red-600 hover:bg-red-100" data-action="delete" data-id="${intention.id}">删除</button>
+                </td>
+            `;
+            tableBody.appendChild(tr);
+        });
+
+        tableBody.querySelectorAll('.action-btn').forEach(btn => {
+            btn.addEventListener('click', handleIntentionAction);
+        });
+    }
+
+
+    function renderDataMaintenancePage() {
+        const container = adminContentPanels['data-maintenance'].querySelector('.bg-white');
+        if (!container) return;
+        container.innerHTML = `
+            <div>
+                <h4 class="text-md font-semibold text-gray-600 mb-2">设备类型管理</h4>
+                <div id="types-list" class="space-y-2"></div>
+                <div class="flex items-center mt-2">
+                    <input type="text" id="new-type-name" class="form-input w-48 mr-2" placeholder="新类型名称">
+                    <input type="text" id="new-type-unit" class="form-input w-24 mr-2" placeholder="单位(吨/米)">
+                    <button id="add-new-type" class="bg-blue-500 text-white px-4 py-2 rounded-md">添加类型</button>
+                </div>
+            </div>
+            <div>
+                <h4 class="text-md font-semibold text-gray-600 mb-2 mt-6">品牌管理</h4>
+                <select id="brand-type-select" class="form-select w-48 mb-2"></select>
+                <div id="brands-list" class="space-y-2"></div>
+                 <div class="flex items-center mt-2">
+                    <input type="text" id="new-brand-name" class="form-input w-48 mr-2" placeholder="新品牌名称">
+                    <button id="add-new-brand" class="bg-blue-500 text-white px-4 py-2 rounded-md">添加品牌</button>
+                </div>
+            </div>
+        `;
+
+        renderTypeManagement();
+        
+        const brandTypeSelect = document.getElementById('brand-type-select');
+        populateSelect(brandTypeSelect, Object.keys(equipmentData));
+        brandTypeSelect.addEventListener('change', () => renderBrandManagement(brandTypeSelect.value));
+        renderBrandManagement(brandTypeSelect.value);
+
+        document.getElementById('add-new-type').addEventListener('click', addNewType);
+        document.getElementById('add-new-brand').addEventListener('click', addNewBrand);
+    }
+    
+    function renderSettingsPage() {
+        // This function is for the main settings page, which is now simpler.
+    }
+    
+    function renderTypeManagement() {
+        const list = document.getElementById('types-list');
+        list.innerHTML = '';
+        for (const type in equipmentData) {
+            const item = document.createElement('div');
+            item.className = 'flex items-center justify-between p-2 bg-gray-50 rounded';
+            item.innerHTML = `<span>${type} (单位: ${equipmentData[type].unit})</span>
+                              <button data-type="${type}" class="text-red-500 hover:text-red-700 text-sm delete-type-btn">删除</button>`;
+            list.appendChild(item);
+        }
+        document.querySelectorAll('.delete-type-btn').forEach(btn => btn.addEventListener('click', deleteType));
+    }
+
+    function renderBrandManagement(type) {
+        const list = document.getElementById('brands-list');
+        list.innerHTML = '';
+        if (!equipmentData[type]) return;
+
+        equipmentData[type].brands.forEach(brand => {
+            const item = document.createElement('div');
+            item.className = 'flex items-center justify-between p-2 bg-gray-50 rounded';
+            item.innerHTML = `<span>${brand}</span>
+                              <button data-type="${type}" data-brand="${brand}" class="text-red-500 hover:text-red-700 text-sm delete-brand-btn">删除</button>`;
+            list.appendChild(item);
+        });
+         document.querySelectorAll('.delete-brand-btn').forEach(btn => btn.addEventListener('click', deleteBrand));
+    }
+
+
+    function addNewType() {
+        const nameInput = document.getElementById('new-type-name');
+        const unitInput = document.getElementById('new-type-unit');
+        const name = nameInput.value.trim();
+        const unit = unitInput.value.trim();
+        if (name && unit && !equipmentData[name]) {
+            equipmentData[name] = { brands: [], unit: unit };
+            renderTypeManagement();
+            const brandTypeSelect = document.getElementById('brand-type-select');
+            populateSelect(brandTypeSelect, Object.keys(equipmentData));
+            nameInput.value = '';
+            unitInput.value = '';
+            showNotification(`类型 "${name}" 已添加`);
+        } else {
+            showNotification('请输入有效且不重复的类型名称和单位', 'error');
+        }
+    }
+
+    function deleteType(e) {
+        const type = e.target.dataset.type;
+        showConfirmModal(`确定要删除类型 "${type}" 吗？其下所有品牌也将被删除。`, () => {
+            delete equipmentData[type];
+            renderTypeManagement();
+            const brandTypeSelect = document.getElementById('brand-type-select');
+            populateSelect(brandTypeSelect, Object.keys(equipmentData));
+            renderBrandManagement(brandTypeSelect.value);
+            showNotification(`类型 "${type}" 已删除`);
+        });
+    }
+
+    function addNewBrand() {
+        const type = document.getElementById('brand-type-select').value;
+        const nameInput = document.getElementById('new-brand-name');
+        const name = nameInput.value.trim();
+        if (name && equipmentData[type] && !equipmentData[type].brands.includes(name)) {
+            equipmentData[type].brands.push(name);
+            renderBrandManagement(type);
+            nameInput.value = '';
+            showNotification(`品牌 "${name}" 已添加到 "${type}"`);
+        } else {
+             showNotification('请输入有效且不重复的品牌名称', 'error');
+        }
+    }
+
+    function deleteBrand(e) {
+        const {type, brand} = e.target.dataset;
+        showConfirmModal(`确定要从 "${type}" 中删除品牌 "${brand}" 吗？`, () => {
+            const brandIndex = equipmentData[type].brands.indexOf(brand);
+            if (brandIndex > -1) {
+                equipmentData[type].brands.splice(brandIndex, 1);
+                renderBrandManagement(type);
+                showNotification(`品牌 "${brand}" 已删除`);
+            }
+        });
+    }
+
+
+    function handleListingAction(e) {
+        const { action, id } = e.target.dataset;
+        const listing = mockListings.find(item => item.id === parseInt(id));
+        if (!listing) return;
+
+        switch(action) {
+            case 'approve':
+                listing.status = 'selling';
+                showNotification(`编号 #${id} 已审核通过并上架。`);
+                renderListingsManagement();
+                break;
+            case 'reject':
+                showConfirmModal(`确定要驳回编号 #${id} 吗?`, () => {
+                    listing.status = 'off';
+                    showNotification(`编号 #${id} 已被驳回。`);
+                    renderListingsManagement();
+                });
+                break;
+            case 'edit':
+                 openAdminEditModal(parseInt(id));
+                break;
+            case 'delete':
+                showConfirmModal(`确定要永久删除编号 #${id} 吗?`, () => {
+                    mockListings = mockListings.filter(item => item.id !== parseInt(id));
+                    showNotification(`编号 #${id} 已被删除。`);
+                    renderListingsManagement();
+                });
+                break;
+        }
+    }
+
+    function handleUserAction(e) {
+        const { action, id } = e.target.dataset;
+        const user = mockUsers.find(u => u.id === parseInt(id));
+        if (!user) return;
+
+        if (action === 'ban') {
+            showConfirmModal(`确定要封禁用户 “${user.nickname}” 吗?`, () => {
+                user.status = 'banned';
+                showNotification(`用户 “${user.nickname}” 已被封禁。`);
+                renderUserManagement();
+            });
+        } else if (action === 'unban') {
+            user.status = 'active';
+            showNotification(`用户 “${user.nickname}” 已解封。`);
+            renderUserManagement();
+        }
+    }
+
+    function handleReportAction(e) {
+        const { action, id } = e.target.dataset;
+        if (action === 'view') {
+             openAdminEditModal(parseInt(id), { readOnly: true });
+        } else if (action === 'process') {
+            const report = mockReports.find(r => r.id === parseInt(id));
+            if (report) {
+                report.status = 'processed';
+                showNotification(`举报 #${id} 已标记为处理。`);
+                renderReportManagement();
             }
         }
     }
-    updateTabActive(pageId);
-    screenElement.scrollTop = 0;
-}
-function navigateTo(pageId, title, data = null) {
-    pageHistory.push(pageId);
-    renderPage(pageId, null, data);
-    showPage(pageId, title);
-}
-function navigateBack() {
-    if (pageHistory.length > 1) {
-        pageHistory.pop();
-        const prevPageId = pageHistory[pageHistory.length - 1];
-        const prevPage = document.querySelector(`.tab-item[data-page="${prevPageId}"], .profile-menu > div[data-page="${prevPageId}"]`);
-        const prevTitle = prevPage ? (prevPage.querySelector('span') ? prevPage.querySelector('span').textContent : '详情') : '首页';
-        renderPage(prevPageId);
-        showPage(prevPageId, prevTitle);
-    }
-}
-function switchTab(pageId) {
-    pageHistory = [pageId];
-    renderPage(pageId);
-    showPage(pageId);
-}
-function updateTabActive(pageId) {
-    let isTab = false;
-    tabItems.forEach(item => {
-        const isActive = item.dataset.page === pageId;
-        item.classList.toggle('active', isActive);
-        if (isActive) isTab = true;
-    });
-    if (!isTab) {
-         tabItems.forEach(item => item.classList.remove('active'));
-    }
-}
-
-// --- 用户端弹窗逻辑 ---
-function showCallModal(phone) {
-    callModal.querySelector('p:first-child').textContent = phone || '138-8888-8888';
-    callModal.classList.remove('hidden');
-}
-function hideCallModal() { callModal.classList.add('hidden'); }
-function showConfirmModal(text, onConfirm) {
-    confirmModalText.textContent = text;
-    confirmActionBtn.onclick = () => {
-        onConfirm();
-        hideConfirmModal();
-    };
-    confirmModal.classList.remove('hidden');
-}
-function hideConfirmModal() { confirmModal.classList.add('hidden'); }
-function openLightbox(src) {
-    lightboxImage.src = src;
-    imageLightbox.classList.remove('hidden');
-}
-function closeLightbox() { imageLightbox.classList.add('hidden'); }
-
-// --- 用户端意向弹窗逻辑 ---
-function openIntentionModal(id = null) {
-    editingIntentionId = id;
-    const modalTitle = intentionModal.querySelector('#intention-modal-title');
-    const typeSelect = intentionModal.querySelector('#intention-type');
-    const brandSelect = intentionModal.querySelector('#intention-brand');
-    const tonnageInput = intentionModal.querySelector('#intention-tonnage');
-    const emissionSelect = intentionModal.querySelector('#intention-emission');
     
-    populateSelect(typeSelect, Object.keys(equipmentData));
-    populateSelect(emissionSelect, emissionOptions);
-    
-    typeSelect.onchange = e => {
-        const type = e.target.value;
-        const brands = equipmentData[type] ? ["不限", ...equipmentData[type].brands] : ["不限"];
-        populateSelect(brandSelect, brands);
-    };
-
-    if (id !== null) {
-        modalTitle.textContent = '修改意向';
-        const intention = mockIntentions.find(i => i.id === id);
-        typeSelect.value = intention.type;
-        tonnageInput.value = intention.tonnage === '不限' ? '' : intention.tonnage;
-        emissionSelect.value = intention.emission;
-        currentIntentionLocations = [...intention.locations];
-        typeSelect.dispatchEvent(new Event('change'));
-        brandSelect.value = intention.brand;
-
-    } else {
-        modalTitle.textContent = '添加意向';
-        currentIntentionLocations = [];
-        typeSelect.value = Object.keys(equipmentData)[0];
-        tonnageInput.value = '';
-        emissionSelect.value = '不限';
-        typeSelect.dispatchEvent(new Event('change'));
-    }
-
-    setupLocationPicker();
-    renderLocationTags();
-    intentionModal.classList.remove('hidden');
-}
-function closeIntentionModal() {
-    intentionModal.classList.add('hidden');
-    editingIntentionId = null;
-}
-function setupLocationPicker() {
-    const provinceSelect = intentionModal.querySelector('#intention-province');
-    const citySelect = intentionModal.querySelector('#intention-city');
-    populateSelect(provinceSelect, Object.keys(chinaLocations));
-    provinceSelect.onchange = e => {
-        const cities = chinaLocations[e.target.value] ? ["不限", ...chinaLocations[e.target.value]] : [];
-        populateSelect(citySelect, cities);
-    };
-    provinceSelect.dispatchEvent(new Event('change'));
-}
-function renderLocationTags() {
-    const displayDiv = intentionModal.querySelector('#intention-locations-display');
-    displayDiv.innerHTML = '';
-    if (currentIntentionLocations.length === 0) {
-        displayDiv.innerHTML = `<span class="text-gray-400">尚未添加地区</span>`;
-    }
-    currentIntentionLocations.forEach((loc, index) => {
-        const tag = document.createElement('span');
-        tag.className = 'inline-flex items-center bg-blue-100 text-blue-800 text-sm font-medium mr-2 mb-2 px-2.5 py-1 rounded-full';
-        tag.innerHTML = `${loc.province} - ${loc.city} <button class="ml-2 text-blue-600 hover:text-blue-800" data-index="${index}">&times;</button>`;
-        tag.querySelector('button').addEventListener('click', e => {
-            currentIntentionLocations.splice(parseInt(e.target.dataset.index), 1);
-            renderLocationTags();
-        });
-        displayDiv.appendChild(tag);
-    });
-}
-
-// --- 用户端图片上传逻辑 ---
-function handleImageUpload(event, container, imageUrls = []) {
-    const previewsContainer = container.querySelector('.previews-container');
-    const uploadTrigger = container.querySelector('.upload-trigger');
-    
-    previewsContainer.querySelectorAll('.image-preview-item').forEach(item => item.remove());
-
-    const addPreview = (src) => {
-        const currentPreviews = previewsContainer.querySelectorAll('.image-preview-item').length;
-        if(currentPreviews >= 9) return;
-
-        const previewItem = document.createElement('div');
-        previewItem.className = 'w-full h-20 image-preview-item';
-        previewItem.innerHTML = `
-            <img src="${src}" class="w-full h-full object-cover rounded-md">
-            <div class="delete-preview-btn">×</div>
-        `;
-        previewsContainer.insertBefore(previewItem, uploadTrigger);
-        
-        previewItem.querySelector('.delete-preview-btn').addEventListener('click', () => {
-            previewItem.remove();
-            checkUploadLimit(container);
-        });
-    };
-
-    if (imageUrls.length > 0) {
-        imageUrls.forEach(url => addPreview(url));
-    } else {
-         const files = event.target.files;
-         for (const file of files) {
-             const reader = new FileReader();
-             reader.onload = (e) => addPreview(e.target.result);
-             reader.readAsDataURL(file);
+    function handleIntentionAction(e) {
+        const { action, id } = e.target.dataset;
+        if (action === 'delete') {
+            showConfirmModal(`确定要删除这条意向吗 (ID: #${id})？`, () => {
+                mockIntentions = mockIntentions.filter(i => i.id !== parseInt(id));
+                document.getElementById('apply-intention-filters').click(); // Re-apply filters
+                showNotification('意向已删除');
+            });
         }
     }
-    
-    if(event.target) event.target.value = '';
-    checkUploadLimit(container);
-}
-function checkUploadLimit(container) {
-    const previewsContainer = container.querySelector('.previews-container');
-    const uploadTrigger = container.querySelector('.upload-trigger');
-    const currentPreviews = previewsContainer.querySelectorAll('.image-preview-item').length;
-    uploadTrigger.style.display = currentPreviews >= 9 ? 'none' : 'flex';
-}
 
-// --- 页面渲染逻辑 ---
-function renderPage(pageId, container, data) {
-    const pageContainer = container || document.getElementById(`page-${pageId}`);
-    switch(pageId) {
-        case 'index': renderIndexPage(pageContainer); break;
-        case 'post': renderPostPage(pageContainer, data); break;
-        case 'profile': renderProfilePage(pageContainer); break;
-        case 'favorites': renderFavoritesPage(pageContainer); break;
-        case 'posts': renderPostsPage(pageContainer); break;
-        case 'intentions': renderIntentionsPage(pageContainer); break;
-        case 'report': renderReportPage(pageContainer); break;
-        case 'detail': renderDetailPage(data); break;
-    }
-}
-function renderIndexPage(container) {
+    // --- 用户端页面渲染 ---
+    function renderIndexPage(container) {
     container.innerHTML = `
         <div class="w-full">
             <div class="bg-white p-4 border-b border-gray-200">
@@ -898,11 +1205,12 @@ function renderIndexPage(container) {
                 </div>
                 <div class="filter-content hidden mt-4 space-y-4">
                      <div class="grid grid-cols-5 gap-2 items-center"><label class="col-span-1 text-sm text-gray-600">地区:</label><select class="province-select col-span-2 form-select"></select><select class="city-select col-span-2 form-select"></select></div>
+                     <div class="grid grid-cols-5 gap-2 items-center"><label class="col-span-1 text-sm text-gray-600">来源:</label><select class="source-select col-span-4 form-select"></select></div>
                      <div class="grid grid-cols-5 gap-2 items-center"><label class="col-span-1 text-sm text-gray-600">类型:</label><select class="type-select col-span-4 form-select"></select></div>
                      <div class="grid grid-cols-5 gap-2 items-center"><label class="col-span-1 text-sm text-gray-600">品牌:</label><select class="brand-select col-span-4 form-select"></select></div>
                      <div class="grid grid-cols-5 gap-2 items-center"><label id="spec-label" class="col-span-1 text-sm text-gray-600">规格:</label><input class="spec-input col-span-4 form-input" placeholder="请先选择类型" /></div>
                      <div class="grid grid-cols-5 gap-2 items-center"><label class="col-span-1 text-sm text-gray-600">排放:</label><select class="emission-select col-span-4 form-select"></select></div>
-                     <div class="flex space-x-4 mt-4"><button class="flex-1 bg-yellow-500 text-white py-2 rounded-md">重置</button><button class="flex-1 bg-blue-500 text-white py-2 rounded-md">筛选</button></div>
+                     <div class="flex space-x-4 mt-4"><button id="reset-filters" class="flex-1 bg-yellow-500 text-white py-2 rounded-md">重置</button><button id="apply-filters" class="flex-1 bg-blue-500 text-white py-2 rounded-md">筛选</button></div>
                 </div>
             </div>
             <div class="listings-container p-3 space-y-3"></div>
@@ -923,22 +1231,30 @@ function renderIndexPage(container) {
     const citySelect = container.querySelector('.city-select');
     const typeSelect = container.querySelector('.type-select');
     const brandSelect = container.querySelector('.brand-select');
+    const sourceSelect = container.querySelector('.source-select');
     const specInput = container.querySelector('.spec-input');
     const specLabel = container.querySelector('#spec-label');
+    const emissionSelect = container.querySelector('.emission-select');
+    const applyBtn = container.querySelector('#apply-filters');
+    const resetBtn = container.querySelector('#reset-filters');
+
+    // Populate selects
     populateSelect(provinceSelect, ["不限", ...Object.keys(chinaLocations)]);
     populateSelect(citySelect, ['不限']);
     citySelect.disabled = true;
+    const equipmentTypesForFilter = ['不限', ...Object.keys(equipmentData)];
+    populateSelect(typeSelect, equipmentTypesForFilter);
+    const allBrands = ["不限", ...new Set(Object.values(equipmentData).flatMap(type => type.brands))];
+    populateSelect(brandSelect, allBrands);
+    populateSelect(sourceSelect, ["不限", "车主直卖", "中介信息", "二手车商"]);
+    populateSelect(emissionSelect, emissionOptions);
+
+    // Event listeners for filters
     provinceSelect.addEventListener('change', (e) => {
         const cities = chinaLocations[e.target.value] ? ["不限", ...chinaLocations[e.target.value]] : ["不限"];
         populateSelect(citySelect, cities);
         citySelect.disabled = (e.target.value === '不限');
     });
-    
-    const equipmentTypesForFilter = ['不限', ...Object.keys(equipmentData)];
-    populateSelect(typeSelect, equipmentTypesForFilter);
-    
-    const allBrands = ["不限", ...new Set(Object.values(equipmentData).flatMap(type => type.brands))];
-    populateSelect(brandSelect, allBrands);
     
     typeSelect.addEventListener('change', (e) => {
         const selectedType = e.target.value;
@@ -959,7 +1275,54 @@ function renderIndexPage(container) {
         }
     });
 
-    populateSelect(container.querySelector('.emission-select'), emissionOptions);
+    applyBtn.addEventListener('click', () => {
+        let filteredListings = mockListings.filter(l => l.status === 'selling');
+
+        const province = provinceSelect.value;
+        const city = citySelect.value;
+        const type = typeSelect.value;
+        const brand = brandSelect.value;
+        const source = sourceSelect.value;
+        const spec = specInput.value;
+        const emission = emissionSelect.value;
+
+        if (province !== '不限') {
+            filteredListings = filteredListings.filter(l => l.location.startsWith(province));
+            if (city !== '不限') {
+                 filteredListings = filteredListings.filter(l => l.location === `${province} ${city}`);
+            }
+        }
+        if (type !== '不限') {
+            filteredListings = filteredListings.filter(l => l.type === type);
+        }
+        if (brand !== '不限') {
+            filteredListings = filteredListings.filter(l => l.brand === brand);
+        }
+        if (source !== '不限') {
+            filteredListings = filteredListings.filter(l => l.tags[0] === source);
+        }
+         if (spec) {
+            filteredListings = filteredListings.filter(l => l.tonnage == spec);
+        }
+        if (emission !== '不限') {
+            filteredListings = filteredListings.filter(l => l.tags.includes(emission));
+        }
+        
+        renderListings(container.querySelector('.listings-container'), filteredListings);
+    });
+
+    resetBtn.addEventListener('click', () => {
+        provinceSelect.value = '不限';
+        citySelect.innerHTML = '<option>不限</option>';
+        citySelect.disabled = true;
+        typeSelect.value = '不限';
+        brandSelect.value = '不限';
+        sourceSelect.value = '不限';
+        specInput.value = '';
+        emissionSelect.value = '不限';
+        typeSelect.dispatchEvent(new Event('change'));
+        renderListings(container.querySelector('.listings-container'), mockListings.filter(l => l.status === 'selling'));
+    });
 }
 function renderListings(container, list) {
     if (!container) return;
@@ -978,7 +1341,7 @@ function renderListings(container, list) {
             <div class="space-y-2">
                 <h3 class="text-lg font-bold text-gray-800">${item.title}</h3>
                 <div class="flex space-x-2">
-                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">${item.tags[1]}</span>
+                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">${item.type}</span>
                     <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">${item.tags[2]}</span>
                 </div>
                 <div class="text-xs text-gray-500 space-y-1">
@@ -1119,7 +1482,7 @@ function renderPostPage(container, postToEditId = null) {
             </div>
             
             <div class="space-y-4">
-                <div class="grid grid-cols-3 items-center"><label class="col-span-1">发布者身份</label><select id="post-identity-select" class="col-span-2 form-select"><option>车主</option><option>中介</option><option>二手车商</option></select></div>
+                <div class="grid grid-cols-3 items-center"><label class="col-span-1">发布者身份</label><select id="post-identity-select" class="col-span-2 form-select"><option>车主直卖</option><option>中介信息</option><option>二手车商</option></select></div>
                 <div class="grid grid-cols-3 items-center"><label class="col-span-1">设备类型</label><select id="post-type-select" class="col-span-2 form-select"></select></div>
                 <div class="grid grid-cols-3 items-center"><label class="col-span-1">品牌</label><select id="post-brand-select" class="col-span-2 form-select"></select></div>
                 <div class="grid grid-cols-3 items-center"><label class="col-span-1">型号</label><input id="post-model-input" class="col-span-2 form-input" placeholder="请输入型号"></div>
@@ -1372,94 +1735,236 @@ function renderIntentionsPage(page) {
         });
     }));
 }
+function openIntentionModal(id = null) {
+    editingIntentionId = id;
+    const modalTitle = intentionModal.querySelector('#intention-modal-title');
+    const typeSelect = intentionModal.querySelector('#intention-type');
+    const brandSelect = intentionModal.querySelector('#intention-brand');
+    const tonnageInput = intentionModal.querySelector('#intention-tonnage');
+    const emissionSelect = intentionModal.querySelector('#intention-emission');
+    
+    populateSelect(typeSelect, Object.keys(equipmentData));
+    populateSelect(emissionSelect, emissionOptions);
+    
+    typeSelect.onchange = e => {
+        const type = e.target.value;
+        const brands = equipmentData[type] ? ["不限", ...equipmentData[type].brands] : ["不限"];
+        populateSelect(brandSelect, brands);
+    };
 
+    if (id !== null) {
+        modalTitle.textContent = '修改意向';
+        const intention = mockIntentions.find(i => i.id === id);
+        typeSelect.value = intention.type;
+        tonnageInput.value = intention.tonnage === '不限' ? '' : intention.tonnage;
+        emissionSelect.value = intention.emission;
+        currentIntentionLocations = [...intention.locations];
+        typeSelect.dispatchEvent(new Event('change'));
+        brandSelect.value = intention.brand;
 
-// --- 应用初始化 ---
-function initializeApp() {
-    // 全局事件监听
-    viewToggleBtn.addEventListener('click', toggleView);
-    adminSidebarItems.forEach(item => {
-        item.addEventListener('click', (e) => {
-            e.preventDefault();
-            renderAdminContent(item.dataset.page);
+    } else {
+        modalTitle.textContent = '添加意向';
+        currentIntentionLocations = [];
+        typeSelect.value = Object.keys(equipmentData)[0];
+        tonnageInput.value = '';
+        emissionSelect.value = '不限';
+        typeSelect.dispatchEvent(new Event('change'));
+    }
+
+    setupLocationPicker();
+    renderLocationTags();
+    intentionModal.classList.remove('hidden');
+}
+function setupLocationPicker() {
+    const provinceSelect = intentionModal.querySelector('#intention-province');
+    const citySelect = intentionModal.querySelector('#intention-city');
+    populateSelect(provinceSelect, Object.keys(chinaLocations));
+    provinceSelect.onchange = e => {
+        const cities = chinaLocations[e.target.value] ? ["不限", ...chinaLocations[e.target.value]] : [];
+        populateSelect(citySelect, cities);
+    };
+    provinceSelect.dispatchEvent(new Event('change'));
+}
+function renderLocationTags() {
+    const displayDiv = intentionModal.querySelector('#intention-locations-display');
+    displayDiv.innerHTML = '';
+    if (currentIntentionLocations.length === 0) {
+        displayDiv.innerHTML = `<span class="text-gray-400">尚未添加地区</span>`;
+    }
+    currentIntentionLocations.forEach((loc, index) => {
+        const tag = document.createElement('span');
+        tag.className = 'inline-flex items-center bg-blue-100 text-blue-800 text-sm font-medium mr-2 mb-2 px-2.5 py-1 rounded-full';
+        tag.innerHTML = `${loc.province} - ${loc.city} <button class="ml-2 text-blue-600 hover:text-blue-800" data-index="${index}">&times;</button>`;
+        tag.querySelector('button').addEventListener('click', e => {
+            currentIntentionLocations.splice(parseInt(e.target.dataset.index), 1);
+            renderLocationTags();
         });
+        displayDiv.appendChild(tag);
     });
-    adminContentPanels.settings.addEventListener('click', (e) => {
-        if (e.target.id === 'save-settings-btn') {
-            showNotification('设置已保存！');
-        }
+}
+function openAdminEditModal(listingId, options = {}) {
+    const { readOnly = false } = options;
+    const item = mockListings.find(l => l.id === listingId);
+    if (!item) return;
+
+    const formContainer = document.getElementById('admin-edit-form-container');
+    const sourceOptions = ["车主直卖", "中介信息", "二手车商"];
+    const statusMap = { selling: '已上架', reviewing: '待审核', off: '已下架' };
+    
+    formContainer.innerHTML = `
+        <div class="space-y-4">
+            <div class="grid grid-cols-3 items-center"><label class="col-span-1">标题</label><input id="admin-edit-title" class="col-span-2 form-input" value="${item.title}" ${readOnly ? 'disabled' : ''}></div>
+             <div class="grid grid-cols-3 items-center"><label class="col-span-1">价格(万)</label><input type="number" id="admin-edit-price" class="col-span-2 form-input" value="${item.price}" ${readOnly ? 'disabled' : ''}></div>
+             <div class="grid grid-cols-3 items-center"><label class="col-span-1">来源</label><select id="admin-edit-source" class="col-span-2 form-select" ${readOnly ? 'disabled' : ''}></select></div>
+             <div class="grid grid-cols-3 items-center"><label class="col-span-1">设备类型</label><select id="admin-edit-type" class="col-span-2 form-select" ${readOnly ? 'disabled' : ''}></select></div>
+             <div class="grid grid-cols-3 items-center"><label class="col-span-1">品牌</label><select id="admin-edit-brand" class="col-span-2 form-select" ${readOnly ? 'disabled' : ''}></select></div>
+             <div class="grid grid-cols-3 items-center"><label class="col-span-1">排放标准</label><select id="admin-edit-emission" class="col-span-2 form-select" ${readOnly ? 'disabled' : ''}></select></div>
+             <div class="grid grid-cols-3 items-center"><label class="col-span-1">工作小时</label><input type="number" id="admin-edit-work-hours" class="col-span-2 form-input" value="${item.work_hours}" ${readOnly ? 'disabled' : ''}></div>
+             <div class="grid grid-cols-3 items-center"><label class="col-span-1">行驶里程(km)</label><input type="number" id="admin-edit-mileage" class="col-span-2 form-input" value="${item.mileage}" ${readOnly ? 'disabled' : ''}></div>
+             <div class="grid grid-cols-3 items-center"><label class="col-span-1">状态</label><select id="admin-edit-status" class="col-span-2 form-select" ${readOnly ? 'disabled' : ''}></select></div>
+             <div id="admin-modal-buttons" class="flex justify-end space-x-4 pt-4">
+                <button id="cancel-admin-edit" class="bg-gray-300 text-gray-800 px-4 py-2 rounded-md">取消</button>
+                <button id="save-admin-edit" data-id="${listingId}" class="bg-blue-600 text-white px-4 py-2 rounded-md">保存更改</button>
+            </div>
+        </div>
+    `;
+    
+    const typeSelect = document.getElementById('admin-edit-type');
+    const brandSelect = document.getElementById('admin-edit-brand');
+    const statusSelect = document.getElementById('admin-edit-status');
+    const modalButtons = document.getElementById('admin-modal-buttons');
+    
+    populateSelect(document.getElementById('admin-edit-source'), sourceOptions, item.tags[0]);
+    populateSelect(typeSelect, Object.keys(equipmentData), item.type);
+    populateSelect(brandSelect, equipmentData[item.type].brands, item.brand);
+    populateSelect(document.getElementById('admin-edit-emission'), emissionOptions, item.tags[2]);
+    
+    statusSelect.innerHTML = Object.entries(statusMap).map(([key, value]) => `<option value="${key}">${value}</option>`).join('');
+    statusSelect.value = item.status;
+
+    typeSelect.addEventListener('change', e => {
+        const selectedType = e.target.value;
+        const brands = equipmentData[selectedType] ? equipmentData[selectedType].brands : [];
+        populateSelect(brandSelect, brands);
     });
 
-    // 用户端事件监听
-    tabItems.forEach(tab => tab.addEventListener('click', () => switchTab(tab.dataset.page)));
-    backButton.addEventListener('click', navigateBack);
-    screenElement.addEventListener('click', (e) => {
-        const callButton = e.target.closest('.call-btn');
-        if (callButton) {
-            e.stopPropagation();
-            showCallModal(callButton.dataset.phone);
-        }
-    });
-    detailActionBar.addEventListener('click', (e) => {
-        const callButton = e.target.closest('.call-btn');
-        if(callButton){
-            e.stopPropagation();
-            showCallModal(callButton.dataset.phone);
-        }
-    });
-    cancelCallBtn.addEventListener('click', hideCallModal);
-    confirmCallBtn.addEventListener('click', () => {
-        showNotification('模拟呼叫中...');
-        hideCallModal();
-    });
-    cancelConfirmBtn.addEventListener('click', hideConfirmModal);
-    closeLightboxBtn.addEventListener('click', closeLightbox);
-    intentionModal.querySelector('#close-intention-modal').addEventListener('click', closeIntentionModal);
-    intentionModal.querySelector('#add-location-btn').addEventListener('click', () => {
-        const province = intentionModal.querySelector('#intention-province').value;
-        const city = intentionModal.querySelector('#intention-city').value;
-        if(province && city) {
-            if (!currentIntentionLocations.some(l => l.province === province && l.city === city)) {
-                currentIntentionLocations.push({ province, city });
-                renderLocationTags();
-            } else {
-                showNotification('该地区已添加');
-            }
-        }
-    });
-    intentionModal.querySelector('#save-intention-btn').addEventListener('click', () => {
-        const newIntention = {
-            id: editingIntentionId !== null ? editingIntentionId : Date.now(),
-            type: intentionModal.querySelector('#intention-type').value,
-            brand: intentionModal.querySelector('#intention-brand').value,
-            tonnage: intentionModal.querySelector('#intention-tonnage').value || '不限',
-            emission: intentionModal.querySelector('#intention-emission').value,
-            locations: [...currentIntentionLocations]
-        };
-        if(newIntention.locations.length === 0) {
-            showNotification('请至少添加一个地区');
-            return;
-        }
-        if (editingIntentionId !== null) {
-            const index = mockIntentions.findIndex(i => i.id === editingIntentionId);
-            mockIntentions[index] = newIntention;
-        } else {
-            newIntention.id = Date.now();
-            mockIntentions.push(newIntention);
-        }
-        renderIntentionsPage(document.getElementById('page-intentions'));
-        closeIntentionModal();
-    });
-
-    // 初始加载
-    updateTime();
-    setInterval(updateTime, 1000 * 60);
-    renderPage('index');
-    showPage('index');
+    if (readOnly) {
+        document.getElementById('admin-edit-modal-title').textContent = '查看信息';
+        modalButtons.innerHTML = `<button id="cancel-admin-edit" class="bg-blue-600 text-white px-4 py-2 rounded-md">关闭</button>`;
+    } else {
+        document.getElementById('admin-edit-modal-title').textContent = '编辑信息';
+        document.getElementById('save-admin-edit').addEventListener('click', saveAdminEdit);
+    }
+    
+    document.getElementById('cancel-admin-edit').addEventListener('click', closeAdminEditModal);
+    adminEditModal.classList.remove('hidden');
 }
 
-// --- 应用启动 ---
-initializeApp();
+function saveAdminEdit(e) {
+    const listingId = parseInt(e.target.dataset.id);
+    const listing = mockListings.find(l => l.id === listingId);
+    if (listing) {
+        listing.title = document.getElementById('admin-edit-title').value;
+        listing.price = document.getElementById('admin-edit-price').value;
+        listing.status = document.getElementById('admin-edit-status').value;
+        listing.type = document.getElementById('admin-edit-type').value;
+        listing.brand = document.getElementById('admin-edit-brand').value;
+        listing.work_hours = document.getElementById('admin-edit-work-hours').value;
+        listing.mileage = document.getElementById('admin-edit-mileage').value;
+        listing.tags[0] = document.getElementById('admin-edit-source').value;
+        listing.tags[2] = document.getElementById('admin-edit-emission').value;
+        
+        showNotification('信息已更新');
+        renderListingsManagement();
+        closeAdminEditModal();
+    }
+}
+    function initializeApp() {
+        // 全局事件监听
+        viewToggleBtn.addEventListener('click', toggleView);
+        adminSidebarItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                renderAdminContent(item.dataset.page);
+            });
+        });
+        document.getElementById('save-settings-btn').addEventListener('click', () => {
+            showNotification('设置已保存！');
+        });
+        document.getElementById('close-admin-edit-modal').addEventListener('click', closeAdminEditModal);
+
+        // 用户端事件监听
+        tabItems.forEach(tab => tab.addEventListener('click', () => switchTab(tab.dataset.page)));
+        backButton.addEventListener('click', navigateBack);
+        screenElement.addEventListener('click', (e) => {
+            const callButton = e.target.closest('.call-btn');
+            if (callButton) {
+                e.stopPropagation();
+                showCallModal(callButton.dataset.phone);
+            }
+        });
+        detailActionBar.addEventListener('click', (e) => {
+            const callButton = e.target.closest('.call-btn');
+            if(callButton){
+                e.stopPropagation();
+                showCallModal(callButton.dataset.phone);
+            }
+        });
+        cancelCallBtn.addEventListener('click', hideCallModal);
+        confirmCallBtn.addEventListener('click', () => {
+            showNotification('模拟呼叫中...');
+            hideCallModal();
+        });
+        cancelConfirmBtn.addEventListener('click', hideConfirmModal);
+        closeLightboxBtn.addEventListener('click', closeLightbox);
+        intentionModal.querySelector('#close-intention-modal').addEventListener('click', closeIntentionModal);
+        intentionModal.querySelector('#add-location-btn').addEventListener('click', () => {
+            const province = intentionModal.querySelector('#intention-province').value;
+            const city = intentionModal.querySelector('#intention-city').value;
+            if(province && city) {
+                if (!currentIntentionLocations.some(l => l.province === province && l.city === city)) {
+                    currentIntentionLocations.push({ province, city });
+                    renderLocationTags();
+                } else {
+                    showNotification('该地区已添加');
+                }
+            }
+        });
+        intentionModal.querySelector('#save-intention-btn').addEventListener('click', () => {
+            const newIntention = {
+                id: editingIntentionId !== null ? editingIntentionId : Date.now(),
+                userId: 104, // Mock user ID
+                type: intentionModal.querySelector('#intention-type').value,
+                brand: intentionModal.querySelector('#intention-brand').value,
+                tonnage: intentionModal.querySelector('#intention-tonnage').value || '不限',
+                emission: intentionModal.querySelector('#intention-emission').value,
+                locations: [...currentIntentionLocations]
+            };
+            if(newIntention.locations.length === 0) {
+                showNotification('请至少添加一个地区');
+                return;
+            }
+            if (editingIntentionId !== null) {
+                const index = mockIntentions.findIndex(i => i.id === editingIntentionId);
+                mockIntentions[index] = newIntention;
+            } else {
+                newIntention.id = Date.now();
+                mockIntentions.push(newIntention);
+            }
+            renderIntentionsPage(document.getElementById('page-intentions'));
+            closeIntentionModal();
+        });
+
+        // 初始加载
+        updateTime();
+        setInterval(updateTime, 1000 * 60);
+        renderPage('index');
+        showPage('index');
+    }
+
+    // --- 应用启动 ---
+    initializeApp();
+    });
 </script>
 
 </body>
