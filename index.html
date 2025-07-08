@@ -551,6 +551,48 @@
     const notificationText = document.getElementById('notification-text');
 
     // --- 通用辅助函数 ---
+    function parsePostDate(postDate) {
+        // 解析发布时间文本为数字（天数），用于排序
+        const match = postDate.match(/(\d+)(天|月)前发布/);
+        if (!match) return 0;
+        
+        const value = parseInt(match[1]);
+        const unit = match[2];
+        
+        // 转换为天数，月份按30天计算
+        return unit === '天' ? value : value * 30;
+    }
+
+    function sortListings(listings, sortType = '发布时间-新到旧') {
+        return [...listings].sort((a, b) => {
+            switch (sortType) {
+                case '发布时间-新到旧':
+                    const aDays = parsePostDate(a.post_date);
+                    const bDays = parsePostDate(b.post_date);
+                    return aDays - bDays;
+                
+                case '发布时间-旧到新':
+                    const aDaysOld = parsePostDate(a.post_date);
+                    const bDaysOld = parsePostDate(b.post_date);
+                    return bDaysOld - aDaysOld;
+                
+                case '价格-低到高':
+                    return parseFloat(a.price) - parseFloat(b.price);
+                
+                case '价格-高到低':
+                    return parseFloat(b.price) - parseFloat(a.price);
+                
+                default:
+                    return 0;
+            }
+        });
+    }
+
+    function sortListingsByPostDate(listings) {
+        // 保持向后兼容
+        return sortListings(listings, '发布时间-新到旧');
+    }
+
     function showNotification(text, type = 'success') {
         const toast = document.getElementById('notification-toast')
         if (!toast) return;
@@ -1210,13 +1252,16 @@
                      <div class="grid grid-cols-5 gap-2 items-center"><label class="col-span-1 text-sm text-gray-600">品牌:</label><select class="brand-select col-span-4 form-select"></select></div>
                      <div class="grid grid-cols-5 gap-2 items-center"><label id="spec-label" class="col-span-1 text-sm text-gray-600">规格:</label><input class="spec-input col-span-4 form-input" placeholder="请先选择类型" /></div>
                      <div class="grid grid-cols-5 gap-2 items-center"><label class="col-span-1 text-sm text-gray-600">排放:</label><select class="emission-select col-span-4 form-select"></select></div>
+                     <div class="grid grid-cols-5 gap-2 items-center"><label class="col-span-1 text-sm text-gray-600">排序:</label><select class="sort-select col-span-4 form-select"></select></div>
                      <div class="flex space-x-4 mt-4"><button id="reset-filters" class="flex-1 bg-yellow-500 text-white py-2 rounded-md">重置</button><button id="apply-filters" class="flex-1 bg-blue-500 text-white py-2 rounded-md">筛选</button></div>
                 </div>
             </div>
             <div class="listings-container p-3 space-y-3"></div>
         </div>
     `;
-    renderListings(container.querySelector('.listings-container'), mockListings.filter(l => l.status === 'selling'));
+    const sellingListings = mockListings.filter(l => l.status === 'selling');
+    const sortedListings = sortListings(sellingListings, '发布时间-新到旧');
+    renderListings(container.querySelector('.listings-container'), sortedListings);
     
     container.querySelector('.filter-toggle').addEventListener('click', (e) => {
         const content = container.querySelector('.filter-content');
@@ -1235,6 +1280,7 @@
     const specInput = container.querySelector('.spec-input');
     const specLabel = container.querySelector('#spec-label');
     const emissionSelect = container.querySelector('.emission-select');
+    const sortSelect = container.querySelector('.sort-select');
     const applyBtn = container.querySelector('#apply-filters');
     const resetBtn = container.querySelector('#reset-filters');
 
@@ -1248,6 +1294,7 @@
     populateSelect(brandSelect, allBrands);
     populateSelect(sourceSelect, ["不限", "车主直卖", "中介信息", "二手车商"]);
     populateSelect(emissionSelect, emissionOptions);
+    populateSelect(sortSelect, ["发布时间-新到旧", "发布时间-旧到新", "价格-低到高", "价格-高到低"]);
 
     // Event listeners for filters
     provinceSelect.addEventListener('change', (e) => {
@@ -1275,6 +1322,11 @@
         }
     });
 
+    // 排序选择器改变时立即重新排序
+    sortSelect.addEventListener('change', () => {
+        applyBtn.click(); // 触发筛选重新排序
+    });
+
     applyBtn.addEventListener('click', () => {
         let filteredListings = mockListings.filter(l => l.status === 'selling');
 
@@ -1285,11 +1337,15 @@
         const source = sourceSelect.value;
         const spec = specInput.value;
         const emission = emissionSelect.value;
+        const sortType = sortSelect.value;
 
         if (province !== '不限') {
-            filteredListings = filteredListings.filter(l => l.location.startsWith(province));
+            // 处理省份名格式不一致的问题：去掉"省"、"市"、"自治区"等后缀
+            const cleanProvince = province.replace(/[省市]$|自治区$|特别行政区$/, '');
+            filteredListings = filteredListings.filter(l => l.location.startsWith(cleanProvince));
             if (city !== '不限') {
-                 filteredListings = filteredListings.filter(l => l.location === `${province} ${city}`);
+                const cleanCity = city.replace(/市$/, '');
+                filteredListings = filteredListings.filter(l => l.location === `${cleanProvince} ${cleanCity}`);
             }
         }
         if (type !== '不限') {
@@ -1308,7 +1364,8 @@
             filteredListings = filteredListings.filter(l => l.tags.includes(emission));
         }
         
-        renderListings(container.querySelector('.listings-container'), filteredListings);
+        const sortedFilteredListings = sortListings(filteredListings, sortType);
+        renderListings(container.querySelector('.listings-container'), sortedFilteredListings);
     });
 
     resetBtn.addEventListener('click', () => {
@@ -1320,8 +1377,11 @@
         sourceSelect.value = '不限';
         specInput.value = '';
         emissionSelect.value = '不限';
+        sortSelect.value = '发布时间-新到旧';
         typeSelect.dispatchEvent(new Event('change'));
-        renderListings(container.querySelector('.listings-container'), mockListings.filter(l => l.status === 'selling'));
+        const resetSellingListings = mockListings.filter(l => l.status === 'selling');
+        const resetSortedListings = sortListings(resetSellingListings, '发布时间-新到旧');
+        renderListings(container.querySelector('.listings-container'), resetSortedListings);
     });
 }
 function renderListings(container, list) {
@@ -1606,8 +1666,9 @@ function renderFavoritesPage(page) {
         return;
     }
 
+    const sortedFavList = sortListingsByPostDate(favList);
     let content = '<div class="p-3 space-y-3">';
-    favList.forEach(item => {
+    sortedFavList.forEach(item => {
         content += `
          <div class="bg-white rounded-lg p-3 shadow-sm flex items-center space-x-4">
              <div class="flex-1 flex items-center space-x-4 cursor-pointer item-link" data-id="${item.id}">
@@ -1646,8 +1707,9 @@ function renderFavoritesPage(page) {
 function renderPostsPage(page) {
     let content = '<div class="p-3 space-y-3">';
     const userPostings = mockListings.filter(listing => mockMyPosts.some(p => p.id === listing.id));
+    const sortedUserPostings = sortListingsByPostDate(userPostings);
     
-    userPostings.forEach(item => {
+    sortedUserPostings.forEach(item => {
         const statusMap = { selling: '已上架', reviewing: '审核中', off: '已下架' };
         const statusColor = { selling: 'text-green-600', reviewing: 'text-yellow-600', off: 'text-gray-500' };
 
