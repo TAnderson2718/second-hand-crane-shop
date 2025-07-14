@@ -1,0 +1,221 @@
+/* 全局样式 */
+page {
+  background-color: #f4f4f6;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* 通用容器 */
+.container {
+  padding: 32rpx;
+}
+
+/* 卡片样式 */
+.card {
+  background: #fff;
+  border-radius: 16rpx;
+  box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.08);
+  margin-bottom: 24rpx;
+  overflow: hidden;
+}
+
+/* 按钮样式 */
+.btn {
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  padding: 20rpx 40rpx;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  
+  &.btn-primary {
+    background: #3B82F6;
+    color: #fff;
+  }
+  
+  &.btn-secondary {
+    background: #E5E7EB;
+    color: #374151;
+  }
+  
+  &.btn-danger {
+    background: #EF4444;
+    color: #fff;
+  }
+  
+  &.btn-small {
+    padding: 12rpx 24rpx;
+    font-size: 24rpx;
+  }
+}
+
+/* 表单样式 */
+.form-group {
+  margin-bottom: 32rpx;
+  
+  .label {
+    font-size: 28rpx;
+    color: #374151;
+    margin-bottom: 16rpx;
+    display: block;
+  }
+  
+  .input, .picker, .textarea {
+    background: #f3f4f6;
+    border: 2rpx solid #e5e7eb;
+    border-radius: 12rpx;
+    padding: 24rpx;
+    font-size: 28rpx;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .textarea {
+    min-height: 200rpx;
+  }
+}
+
+/* 列表样式 */
+.list-item {
+  background: #fff;
+  padding: 32rpx;
+  border-bottom: 2rpx solid #f3f4f6;
+  display: flex;
+  align-items: center;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+  
+  .item-content {
+    flex: 1;
+  }
+  
+  .item-arrow {
+    color: #9CA3AF;
+    font-size: 24rpx;
+  }
+}
+
+/* 图片样式 */
+.image {
+  width: 100%;
+  border-radius: 12rpx;
+  
+  &.image-square {
+    aspect-ratio: 1;
+  }
+  
+  &.image-cover {
+    object-fit: cover;
+  }
+}
+
+/* 标签样式 */
+.tag {
+  display: inline-block;
+  padding: 8rpx 16rpx;
+  border-radius: 24rpx;
+  font-size: 22rpx;
+  font-weight: 500;
+  
+  &.tag-primary {
+    background: #DBEAFE;
+    color: #1E40AF;
+  }
+  
+  &.tag-success {
+    background: #D1FAE5;
+    color: #065F46;
+  }
+  
+  &.tag-warning {
+    background: #FEF3C7;
+    color: #92400E;
+  }
+  
+  &.tag-gray {
+    background: #F3F4F6;
+    color: #374151;
+  }
+}
+
+/* 价格样式 */
+.price {
+  color: #EF4444;
+  font-weight: 600;
+  
+  &.price-large {
+    font-size: 48rpx;
+  }
+  
+  &.price-medium {
+    font-size: 36rpx;
+  }
+  
+  &.price-small {
+    font-size: 28rpx;
+  }
+}
+
+/* 文本样式 */
+.text-muted {
+  color: #6B7280;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+/* 布局样式 */
+.flex {
+  display: flex;
+  
+  &.flex-column {
+    flex-direction: column;
+  }
+  
+  &.flex-center {
+    align-items: center;
+    justify-content: center;
+  }
+  
+  &.flex-between {
+    justify-content: space-between;
+  }
+  
+  &.flex-wrap {
+    flex-wrap: wrap;
+  }
+}
+
+.mt-16 { margin-top: 16rpx; }
+.mt-24 { margin-top: 24rpx; }
+.mt-32 { margin-top: 32rpx; }
+.mb-16 { margin-bottom: 16rpx; }
+.mb-24 { margin-bottom: 24rpx; }
+.mb-32 { margin-bottom: 32rpx; }
+.ml-16 { margin-left: 16rpx; }
+.mr-16 { margin-right: 16rpx; }
+
+/* 空状态 */
+.empty-state {
+  text-align: center;
+  padding: 120rpx 32rpx;
+  color: #6B7280;
+  
+  .empty-icon {
+    font-size: 96rpx;
+    margin-bottom: 24rpx;
+    opacity: 0.5;
+  }
+  
+  .empty-text {
+    font-size: 28rpx;
+  }
+} 
