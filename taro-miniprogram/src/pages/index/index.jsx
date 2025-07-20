@@ -116,17 +116,20 @@ export default class Index extends Component {
     showLoading('筛选中...')
     
     try {
+      this.setState({ loading: true })
       const listings = await getListings(filters)
       const sortedListings = sortListings(listings, filters.sortType)
       
       this.setState({
         filteredListings: sortedListings,
-        showFilter: false
+        showFilter: false,
+        loading: false
       })
       
       showToast(`找到 ${sortedListings.length} 条结果`)
     } catch (error) {
       console.error('筛选失败:', error)
+      this.setState({ loading: false })
       showToast('筛选失败，请重试', 'error')
     } finally {
       hideLoading()
@@ -274,10 +277,17 @@ export default class Index extends Component {
 
   // 吨位输入变化
   onTonnageChange = (e) => {
+    const value = e.detail.value
+    
+    if (value && isNaN(parseFloat(value))) {
+      showToast('请输入有效的数字', 'error')
+      return
+    }
+    
     this.setState({
       filters: {
         ...this.state.filters,
-        tonnage: e.detail.value
+        tonnage: value
       }
     })
   }
@@ -291,31 +301,51 @@ export default class Index extends Component {
 
   // 拨打电话
   handleCall = async (phone) => {
+    if (!phone) {
+      showToast('联系电话不可用', 'error')
+      return
+    }
+
     try {
       await makePhoneCall(phone)
     } catch (error) {
       console.error('拨打电话失败:', error)
+      showToast('拨打电话失败，请稍后重试', 'error')
     }
   }
 
   // 收藏/取消收藏
-  handleFavorite = (id) => {
-    const isFavorited = mockFavorites.includes(id)
-    
-    if (isFavorited) {
-      removeFromFavorites(id)
-      showToast('已取消收藏')
-    } else {
-      addToFavorites(id)
-      showToast('收藏成功')
+  handleFavorite = async (id) => {
+    if (!id) return
+
+    try {
+      const isFavorited = mockFavorites.includes(id)
+      
+      if (isFavorited) {
+        removeFromFavorites(id)
+        showToast('已取消收藏')
+      } else {
+        addToFavorites(id)
+        showToast('收藏成功')
+      }
+      
+      this.setState({})
+    } catch (error) {
+      console.error('收藏操作失败:', error)
+      showToast('操作失败，请稍后重试', 'error')
     }
-    
-    this.forceUpdate() // 强制更新以显示收藏状态变化
   }
 
   // 跳转到详情页
   goToDetail = (id) => {
-    navigateTo(`/pages/detail/detail?id=${id}`)
+    if (!id) return
+
+    try {
+      navigateTo(`/pages/detail/detail?id=${id}`)
+    } catch (error) {
+      console.error('页面跳转失败:', error)
+      showToast('页面跳转失败', 'error')
+    }
   }
 
   render() {
@@ -489,10 +519,12 @@ export default class Index extends Component {
               filteredListings.map(item => (
                 <View key={item.id} className='listing-card card'>
                   <View className='listing-header' onClick={() => this.goToDetail(item.id)}>
-                    <View className='source-tag'>{item.tags[0]}</View>
+                    {item.tags && item.tags[0] && (
+                      <View className='source-tag'>{item.tags[0]}</View>
+                    )}
                     <Image
                       className='listing-image image image-cover'
-                      src={item.images[0]}
+                      src={item.images && item.images[0] ? item.images[0] : 'https://picsum.photos/seed/crane/400/300'}
                       mode='aspectFill'
                       lazyLoad
                     />
@@ -502,14 +534,16 @@ export default class Index extends Component {
                     <Text className='listing-title'>{item.title}</Text>
                     
                     <View className='listing-tags'>
-                      <Text className='tag tag-primary'>{item.type}</Text>
-                      <Text className='tag tag-primary'>{item.tags[2]}</Text>
+                      <Text className='tag tag-primary'>{item.type || '未知'}</Text>
+                      {item.tags && item.tags[2] && (
+                        <Text className='tag tag-primary'>{item.tags[2]}</Text>
+                      )}
                     </View>
                     
                     <View className='listing-meta text-muted'>
-                      <Text className='meta-item'>出厂日期: {item.manufacture_date}</Text>
-                      <Text className='meta-item'>发布时间: {item.post_date}</Text>
-                      <Text className='meta-item'>所在地区: {item.location}</Text>
+                      <Text className='meta-item'>出厂日期: {item.manufacture_date || '未知'}</Text>
+                      <Text className='meta-item'>发布时间: {item.post_date || '未知'}</Text>
+                      <Text className='meta-item'>所在地区: {item.location || '未知'}</Text>
                     </View>
                   </View>
                   
@@ -520,7 +554,7 @@ export default class Index extends Component {
                         className='btn btn-small btn-secondary mr-16'
                         onClick={() => this.handleFavorite(item.id)}
                       >
-                        {mockFavorites.includes(item.id) ? '已收藏' : '收藏'}
+                        {mockFavorites && mockFavorites.includes(item.id) ? '已收藏' : '收藏'}
                       </Button>
                       <Button
                         className='btn btn-small btn-primary'
@@ -538,4 +572,4 @@ export default class Index extends Component {
       </View>
     )
   }
-} 
+}    

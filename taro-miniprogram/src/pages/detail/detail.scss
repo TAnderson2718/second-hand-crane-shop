@@ -1,0 +1,149 @@
+.detail {
+  min-height: 100vh;
+  background: #f4f4f6;
+  padding-bottom: 120rpx;
+}
+
+.detail-scroll {
+  height: calc(100vh - 120rpx);
+}
+
+.detail-images {
+  width: 100%;
+  height: 500rpx;
+  background: #fff;
+}
+
+.detail-main-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.detail-content {
+  margin: 16rpx 32rpx;
+  padding: 32rpx;
+}
+
+.detail-header {
+  margin-bottom: 24rpx;
+}
+
+.detail-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 16rpx;
+  line-height: 1.4;
+}
+
+.detail-price {
+  font-size: 48rpx;
+  font-weight: 600;
+  color: #EF4444;
+}
+
+.detail-tags {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 32rpx;
+  flex-wrap: wrap;
+}
+
+.detail-info {
+  margin-bottom: 32rpx;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 0;
+  border-bottom: 2rpx solid #f3f4f6;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.info-label {
+  font-size: 28rpx;
+  color: #6B7280;
+  min-width: 160rpx;
+}
+
+.info-value {
+  font-size: 28rpx;
+  color: #374151;
+  font-weight: 500;
+  text-align: right;
+  flex: 1;
+}
+
+.detail-contact {
+  border-top: 2rpx solid #f3f4f6;
+  padding-top: 24rpx;
+}
+
+.contact-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 16rpx;
+}
+
+.contact-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.contact-person {
+  font-size: 28rpx;
+  color: #374151;
+  font-weight: 500;
+}
+
+.contact-phone {
+  font-size: 28rpx;
+  color: #3B82F6;
+  font-weight: 500;
+}
+
+.detail-actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  padding: 24rpx 32rpx;
+  box-shadow: 0 -2rpx 16rpx rgba(0, 0, 0, 0.1);
+  display: flex;
+  gap: 24rpx;
+
+  .btn {
+    flex: 1;
+    height: 80rpx;
+    line-height: 80rpx;
+    border-radius: 12rpx;
+    font-size: 28rpx;
+    font-weight: 500;
+  }
+}
+
+.loading-container,
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  padding: 32rpx;
+}
+
+.error-text {
+  font-size: 28rpx;
+  color: #6B7280;
+  margin-bottom: 32rpx;
+  text-align: center;
+}

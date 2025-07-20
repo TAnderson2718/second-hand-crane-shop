@@ -1,0 +1,166 @@
+.posts {
+  min-height: 100vh;
+  background: #f4f4f6;
+  position: relative;
+}
+
+.posts-scroll {
+  height: 100vh;
+  padding-bottom: 120rpx;
+}
+
+.posts-container {
+  padding: 16rpx 32rpx;
+}
+
+.post-card {
+  margin-bottom: 32rpx;
+  overflow: hidden;
+  position: relative;
+}
+
+.post-header {
+  position: relative;
+  width: 100%;
+  height: 400rpx;
+  overflow: hidden;
+}
+
+.source-tag {
+  position: absolute;
+  top: 16rpx;
+  left: 16rpx;
+  background: rgba(59, 130, 246, 0.9);
+  color: #fff;
+  padding: 8rpx 16rpx;
+  border-radius: 24rpx;
+  font-size: 22rpx;
+  font-weight: 500;
+  z-index: 10;
+}
+
+.post-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.post-content {
+  padding: 32rpx;
+}
+
+.post-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 16rpx;
+  line-height: 1.4;
+}
+
+.post-tags {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+  flex-wrap: wrap;
+}
+
+.post-meta {
+  font-size: 24rpx;
+  line-height: 1.5;
+  
+  .meta-item {
+    display: block;
+    margin-bottom: 8rpx;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.post-footer {
+  padding: 0 32rpx 32rpx;
+  align-items: center;
+}
+
+.post-actions {
+  gap: 16rpx;
+  
+  .btn {
+    height: 64rpx;
+    line-height: 64rpx;
+    padding: 0 24rpx;
+    border-radius: 8rpx;
+    font-size: 24rpx;
+    
+    &.btn-small {
+      min-width: 120rpx;
+    }
+  }
+}
+
+.floating-action {
+  position: fixed;
+  bottom: 32rpx;
+  right: 32rpx;
+  z-index: 100;
+}
+
+.fab-button {
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 56rpx;
+  background: #3B82F6;
+  color: #fff;
+  font-size: 48rpx;
+  font-weight: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 24rpx rgba(59, 130, 246, 0.4);
+  border: none;
+  
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 120rpx 32rpx;
+  color: #6B7280;
+  
+  .empty-icon {
+    font-size: 96rpx;
+    margin-bottom: 24rpx;
+    opacity: 0.5;
+    display: block;
+  }
+  
+  .empty-text {
+    font-size: 28rpx;
+    margin-bottom: 16rpx;
+  }
+  
+  .empty-hint {
+    font-size: 24rpx;
+    opacity: 0.8;
+  }
+}
+
+.loading-container,
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  padding: 32rpx;
+}
+
+.error-text {
+  font-size: 28rpx;
+  color: #6B7280;
+  margin-bottom: 32rpx;
+  text-align: center;
+}

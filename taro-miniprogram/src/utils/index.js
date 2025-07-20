@@ -55,195 +55,372 @@ export function generateSerialNumber(id) {
 
 // 显示通知
 export function showToast(title, icon = 'success') {
-  return new Promise((resolve) => {
-    wx.showToast({
-      title,
-      icon,
-      duration: 2000,
-      success: resolve
+  try {
+    return new Promise((resolve) => {
+      wx.showToast({
+        title,
+        icon,
+        duration: 2000,
+        success: resolve,
+        fail: (error) => {
+          console.error('显示Toast失败:', error)
+          resolve()
+        }
+      });
     });
-  });
+  } catch (error) {
+    console.error('显示Toast失败:', error)
+    return Promise.resolve()
+  }
 }
 
 // 显示加载中
 export function showLoading(title = '加载中...') {
-  return wx.showLoading({
-    title,
-    mask: true
-  });
+  try {
+    return wx.showLoading({
+      title,
+      mask: true
+    });
+  } catch (error) {
+    console.error('显示Loading失败:', error)
+  }
 }
 
 // 隐藏加载中
 export function hideLoading() {
-  return wx.hideLoading();
+  try {
+    return wx.hideLoading();
+  } catch (error) {
+    console.error('隐藏Loading失败:', error)
+  }
 }
 
 // 显示确认对话框
 export function showModal(title, content) {
-  return new Promise((resolve) => {
-    wx.showModal({
-      title,
-      content,
-      success: (res) => {
-        resolve(res.confirm);
-      }
+  try {
+    return new Promise((resolve) => {
+      wx.showModal({
+        title,
+        content,
+        success: (res) => {
+          resolve(res.confirm);
+        },
+        fail: (error) => {
+          console.error('显示对话框失败:', error)
+          resolve(false)
+        }
+      });
     });
-  });
+  } catch (error) {
+    console.error('显示对话框失败:', error)
+    return Promise.resolve(false)
+  }
 }
 
 // 拨打电话
 export function makePhoneCall(phoneNumber) {
-  return new Promise((resolve, reject) => {
-    wx.makePhoneCall({
-      phoneNumber,
-      success: resolve,
-      fail: reject
+  if (!phoneNumber) {
+    return Promise.reject(new Error('电话号码不能为空'))
+  }
+  
+  try {
+    return new Promise((resolve, reject) => {
+      wx.makePhoneCall({
+        phoneNumber,
+        success: resolve,
+        fail: (error) => {
+          console.error('拨打电话失败:', error)
+          reject(error)
+        }
+      });
     });
-  });
+  } catch (error) {
+    console.error('拨打电话失败:', error)
+    return Promise.reject(error)
+  }
 }
 
 // 预览图片
 export function previewImage(current, urls) {
-  return wx.previewImage({
-    current,
-    urls
-  });
+  if (!urls || urls.length === 0) {
+    throw new Error('图片列表不能为空')
+  }
+  
+  try {
+    return wx.previewImage({
+      current,
+      urls
+    });
+  } catch (error) {
+    console.error('预览图片失败:', error)
+    throw error
+  }
 }
 
 // 选择图片
 export function chooseImage(count = 9) {
-  return new Promise((resolve, reject) => {
-    wx.chooseImage({
-      count,
-      sizeType: ['original', 'compressed'],
-      sourceType: ['album', 'camera'],
-      success: resolve,
-      fail: reject
+  if (count <= 0) {
+    return Promise.reject(new Error('选择图片数量必须大于0'))
+  }
+  
+  try {
+    return new Promise((resolve, reject) => {
+      wx.chooseImage({
+        count,
+        sizeType: ['original', 'compressed'],
+        sourceType: ['album', 'camera'],
+        success: resolve,
+        fail: (error) => {
+          console.error('选择图片失败:', error)
+          reject(error)
+        }
+      });
     });
-  });
+  } catch (error) {
+    console.error('选择图片失败:', error)
+    return Promise.reject(error)
+  }
 }
 
 // 获取用户位置
 export function getLocation() {
-  return new Promise((resolve, reject) => {
-    wx.getLocation({
-      type: 'wgs84',
-      success: resolve,
-      fail: reject
+  try {
+    return new Promise((resolve, reject) => {
+      wx.getLocation({
+        type: 'wgs84',
+        success: resolve,
+        fail: (error) => {
+          console.error('获取用户位置失败:', error)
+          reject(error)
+        }
+      });
     });
-  });
+  } catch (error) {
+    console.error('获取用户位置失败:', error)
+    return Promise.reject(error)
+  }
 }
 
 // 选择位置
 export function chooseLocation() {
-  return new Promise((resolve, reject) => {
-    wx.chooseLocation({
-      success: resolve,
-      fail: reject
+  try {
+    return new Promise((resolve, reject) => {
+      wx.chooseLocation({
+        success: resolve,
+        fail: (error) => {
+          console.error('选择位置失败:', error)
+          reject(error)
+        }
+      });
     });
-  });
+  } catch (error) {
+    console.error('选择位置失败:', error)
+    return Promise.reject(error)
+  }
 }
 
 // 存储数据
 export function setStorage(key, data) {
-  return new Promise((resolve, reject) => {
-    wx.setStorage({
-      key,
-      data,
-      success: resolve,
-      fail: reject
+  if (!key) {
+    return Promise.reject(new Error('存储key不能为空'))
+  }
+  
+  try {
+    return new Promise((resolve, reject) => {
+      wx.setStorage({
+        key,
+        data,
+        success: resolve,
+        fail: (error) => {
+          console.error('存储数据失败:', error)
+          reject(error)
+        }
+      });
     });
-  });
+  } catch (error) {
+    console.error('存储数据失败:', error)
+    return Promise.reject(error)
+  }
 }
 
 // 获取存储数据
 export function getStorage(key) {
-  return new Promise((resolve, reject) => {
-    wx.getStorage({
-      key,
-      success: (res) => resolve(res.data),
-      fail: reject
+  if (!key) {
+    return Promise.reject(new Error('存储key不能为空'))
+  }
+  
+  try {
+    return new Promise((resolve, reject) => {
+      wx.getStorage({
+        key,
+        success: (res) => resolve(res.data),
+        fail: (error) => {
+          console.error('获取存储数据失败:', error)
+          reject(error)
+        }
+      });
     });
-  });
+  } catch (error) {
+    console.error('获取存储数据失败:', error)
+    return Promise.reject(error)
+  }
 }
 
 // 删除存储数据
 export function removeStorage(key) {
-  return new Promise((resolve, reject) => {
-    wx.removeStorage({
-      key,
-      success: resolve,
-      fail: reject
+  if (!key) {
+    return Promise.reject(new Error('存储key不能为空'))
+  }
+  
+  try {
+    return new Promise((resolve, reject) => {
+      wx.removeStorage({
+        key,
+        success: resolve,
+        fail: (error) => {
+          console.error('删除存储数据失败:', error)
+          reject(error)
+        }
+      });
     });
-  });
+  } catch (error) {
+    console.error('删除存储数据失败:', error)
+    return Promise.reject(error)
+  }
 }
 
 // 防抖函数
 export function debounce(func, wait) {
+  if (typeof func !== 'function') {
+    throw new Error('第一个参数必须是函数')
+  }
+  if (typeof wait !== 'number' || wait < 0) {
+    throw new Error('等待时间必须是非负数')
+  }
+  
   let timeout;
-  return function executedFunction(...args) {
+  const debouncedFunction = function executedFunction(...args) {
     const later = () => {
       clearTimeout(timeout);
+      timeout = null;
       func(...args);
     };
     clearTimeout(timeout);
     timeout = setTimeout(later, wait);
   };
+  
+  debouncedFunction.cancel = () => {
+    if (timeout) {
+      clearTimeout(timeout);
+      timeout = null;
+    }
+  };
+  
+  return debouncedFunction;
 }
 
 // 节流函数
 export function throttle(func, limit) {
+  if (typeof func !== 'function') {
+    throw new Error('第一个参数必须是函数')
+  }
+  if (typeof limit !== 'number' || limit < 0) {
+    throw new Error('限制时间必须是非负数')
+  }
+  
   let inThrottle;
-  return function() {
+  let lastResult;
+  
+  const throttledFunction = function() {
     const args = arguments;
     const context = this;
     if (!inThrottle) {
-      func.apply(context, args);
+      lastResult = func.apply(context, args);
       inThrottle = true;
       setTimeout(() => inThrottle = false, limit);
     }
+    return lastResult;
   };
+  
+  throttledFunction.cancel = () => {
+    inThrottle = false;
+  };
+  
+  return throttledFunction;
 }
 
 // 深拷贝
 export function deepClone(obj) {
-  if (obj === null || typeof obj !== 'object') return obj;
-  if (obj instanceof Date) return new Date(obj.getTime());
-  if (obj instanceof Array) return obj.map(item => deepClone(item));
-  if (typeof obj === 'object') {
-    const clonedObj = {};
-    for (const key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        clonedObj[key] = deepClone(obj[key]);
+  try {
+    if (obj === null || typeof obj !== 'object') return obj;
+    if (obj instanceof Date) return new Date(obj.getTime());
+    if (obj instanceof Array) return obj.map(item => deepClone(item));
+    if (typeof obj === 'object') {
+      const clonedObj = {};
+      for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          clonedObj[key] = deepClone(obj[key]);
+        }
       }
+      return clonedObj;
     }
-    return clonedObj;
+  } catch (error) {
+    console.error('深拷贝失败:', error)
+    return obj
   }
 }
 
 // 获取网络状态
 export function getNetworkType() {
-  return new Promise((resolve, reject) => {
-    wx.getNetworkType({
-      success: resolve,
-      fail: reject
+  try {
+    return new Promise((resolve, reject) => {
+      wx.getNetworkType({
+        success: resolve,
+        fail: (error) => {
+          console.error('获取网络状态失败:', error)
+          reject(error)
+        }
+      });
     });
-  });
+  } catch (error) {
+    console.error('获取网络状态失败:', error)
+    return Promise.reject(error)
+  }
 }
 
 // 页面跳转
 export function navigateTo(url) {
-  return wx.navigateTo({ url });
+  try {
+    return wx.navigateTo({ url });
+  } catch (error) {
+    console.error('页面跳转失败:', error)
+    throw error
+  }
 }
 
 export function redirectTo(url) {
-  return wx.redirectTo({ url });
+  try {
+    return wx.redirectTo({ url });
+  } catch (error) {
+    console.error('页面重定向失败:', error)
+    throw error
+  }
 }
 
 export function switchTab(url) {
-  return wx.switchTab({ url });
+  try {
+    return wx.switchTab({ url });
+  } catch (error) {
+    console.error('切换Tab失败:', error)
+    throw error
+  }
 }
 
 export function navigateBack(delta = 1) {
-  return wx.navigateBack({ delta });
-} 
+  try {
+    return wx.navigateBack({ delta });
+  } catch (error) {
+    console.error('返回上一页失败:', error)
+    throw error
+  }
+}       
