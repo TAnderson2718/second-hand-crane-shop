@@ -1,0 +1,188 @@
+.intentions {
+  min-height: 100vh;
+  background: #f4f4f6;
+  position: relative;
+}
+
+.intentions-scroll {
+  height: 100vh;
+  padding-bottom: 120rpx;
+}
+
+.intentions-container {
+  padding: 16rpx 32rpx;
+}
+
+.intention-card {
+  margin-bottom: 32rpx;
+  overflow: hidden;
+}
+
+.intention-content {
+  padding: 32rpx;
+}
+
+.intention-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24rpx;
+}
+
+.intention-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #111827;
+  line-height: 1.4;
+  flex: 1;
+  margin-right: 16rpx;
+}
+
+.intention-status {
+  flex-shrink: 0;
+}
+
+.status-tag {
+  padding: 8rpx 16rpx;
+  border-radius: 24rpx;
+  font-size: 22rpx;
+  font-weight: 500;
+}
+
+.intention-details {
+  margin-bottom: 24rpx;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12rpx 0;
+  border-bottom: 2rpx solid #f3f4f6;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.detail-label {
+  font-size: 28rpx;
+  color: #6B7280;
+  min-width: 160rpx;
+}
+
+.detail-value {
+  font-size: 28rpx;
+  color: #374151;
+  font-weight: 500;
+  text-align: right;
+  flex: 1;
+}
+
+.intention-description {
+  border-top: 2rpx solid #f3f4f6;
+  padding-top: 24rpx;
+}
+
+.description-label {
+  font-size: 28rpx;
+  color: #6B7280;
+  margin-bottom: 12rpx;
+  display: block;
+}
+
+.description-text {
+  font-size: 28rpx;
+  color: #374151;
+  line-height: 1.5;
+}
+
+.intention-footer {
+  padding: 0 32rpx 32rpx;
+  border-top: 2rpx solid #f3f4f6;
+  padding-top: 24rpx;
+}
+
+.intention-actions {
+  justify-content: flex-end;
+  gap: 16rpx;
+  
+  .btn {
+    height: 64rpx;
+    line-height: 64rpx;
+    padding: 0 24rpx;
+    border-radius: 8rpx;
+    font-size: 24rpx;
+    
+    &.btn-small {
+      min-width: 120rpx;
+    }
+  }
+}
+
+.floating-action {
+  position: fixed;
+  bottom: 32rpx;
+  right: 32rpx;
+  z-index: 100;
+}
+
+.fab-button {
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 56rpx;
+  background: #3B82F6;
+  color: #fff;
+  font-size: 48rpx;
+  font-weight: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 24rpx rgba(59, 130, 246, 0.4);
+  border: none;
+  
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 120rpx 32rpx;
+  color: #6B7280;
+  
+  .empty-icon {
+    font-size: 96rpx;
+    margin-bottom: 24rpx;
+    opacity: 0.5;
+    display: block;
+  }
+  
+  .empty-text {
+    font-size: 28rpx;
+    margin-bottom: 16rpx;
+  }
+  
+  .empty-hint {
+    font-size: 24rpx;
+    opacity: 0.8;
+    line-height: 1.4;
+  }
+}
+
+.loading-container,
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  padding: 32rpx;
+}
+
+.error-text {
+  font-size: 28rpx;
+  color: #6B7280;
+  margin-bottom: 32rpx;
+  text-align: center;
+}

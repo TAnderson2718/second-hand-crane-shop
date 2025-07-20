@@ -12,7 +12,19 @@ class App extends Component {
 
   componentDidHide () {}
 
-  componentDidCatchError () {}
+  componentDidCatchError (error, errorInfo) {
+    console.error('应用错误:', error, errorInfo)
+    
+    try {
+      Taro.showToast({
+        title: '应用出现错误，请重启小程序',
+        icon: 'none',
+        duration: 3000
+      })
+    } catch (e) {
+      console.error('显示错误提示失败:', e)
+    }
+  }
 
   // this.props.children 是将要会渲染的页面
   render () {
@@ -20,4 +32,4 @@ class App extends Component {
   }
 }
 
-export default App 
+export default App  

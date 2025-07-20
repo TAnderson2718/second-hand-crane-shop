@@ -118,17 +118,38 @@ export const mockReports = [
 ];
 
 export const mockMyPosts = [
-  { id: 3, status: 'selling' },
-  { id: 4, status: 'reviewing' },
-  { id: 5, status: 'off' }
+  { id: 3, status: 'selling', title: '2019年徐工25吨汽车吊' },
+  { id: 4, status: 'reviewing', title: '2020年三一50吨履带吊' },
+  { id: 5, status: 'off', title: '2018年中联重科35吨汽车吊' }
 ];
 
 export let mockFavorites = [1, 2];
 
 export const mockIntentions = [
-  { id: 1, userId: 101, type: '汽车吊', brand: '徐工', tonnage: '25', emission: '国六', locations: [{ province: '河北省', city: '不限' }]},
-  { id: 2, userId: 102, type: '高空车', brand: '不限', tonnage: '20', emission: '不限', locations: [{ province: '山东省', city: '济南市' }, { province: '江苏省', city: '苏州市' }] },
-  { id: 3, userId: 101, type: '履带吊', brand: '三一', tonnage: '100', emission: '不限', locations: [{ province: '广东省', city: '不限' }]}
+  {
+    id: 1,
+    title: '求购25吨汽车吊',
+    type: '汽车吊',
+    brand: '徐工',
+    tonnage: '25',
+    budget: '80-120',
+    location: '江苏省苏州市',
+    description: '需要一台25吨汽车吊，要求车况良好，手续齐全，最好是近几年的车型。',
+    post_date: '2天前发布',
+    status: 'active'
+  },
+  {
+    id: 2,
+    title: '求购50吨履带吊',
+    type: '履带吊',
+    brand: '不限',
+    tonnage: '50',
+    budget: '200-300',
+    location: '广东省深圳市',
+    description: '工程需要，求购50吨履带吊一台，要求能正常作业，价格合理。',
+    post_date: '5天前发布',
+    status: 'active'
+  }
 ];
 
 // 中国地区数据
@@ -223,26 +244,64 @@ export const getListings = (filters = {}) => {
 };
 
 export const getListingById = (id) => {
-  return mockListings.find(item => item.id === id);
+  if (!id) {
+    return null
+  }
+  
+  try {
+    const listing = mockListings.find(item => item.id === id)
+    return listing || null
+  } catch (error) {
+    console.error('获取商品详情失败:', error)
+    return null
+  }
 };
 
 export const addToFavorites = (id) => {
-  if (!mockFavorites.includes(id)) {
-    mockFavorites.push(id);
+  if (!id) {
+    throw new Error('商品ID不能为空')
+  }
+  
+  try {
+    if (!mockFavorites.includes(id)) {
+      mockFavorites.push(id)
+    }
+  } catch (error) {
+    console.error('添加收藏失败:', error)
+    throw error
   }
 };
 
 export const removeFromFavorites = (id) => {
-  const index = mockFavorites.indexOf(id);
-  if (index > -1) {
-    mockFavorites.splice(index, 1);
+  if (!id) {
+    throw new Error('商品ID不能为空')
+  }
+  
+  try {
+    const index = mockFavorites.indexOf(id)
+    if (index > -1) {
+      mockFavorites.splice(index, 1)
+    }
+  } catch (error) {
+    console.error('移除收藏失败:', error)
+    throw error
   }
 };
 
 export const getFavorites = () => {
-  return mockListings.filter(item => mockFavorites.includes(item.id));
+  try {
+    return mockListings.filter(item => mockFavorites.includes(item.id))
+  } catch (error) {
+    console.error('获取收藏列表失败:', error)
+    return []
+  }
 };
 
 export const getUserPosts = () => {
-  return mockListings.filter(listing => mockMyPosts.some(p => p.id === listing.id));
-}; 
+  try {
+    return mockListings.filter(listing => mockMyPosts.some(p => p.id === listing.id))
+  } catch (error) {
+    console.error('获取用户发布列表失败:', error)
+    return []
+  }
+};       
