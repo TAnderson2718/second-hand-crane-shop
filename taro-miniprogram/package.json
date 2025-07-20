@@ -50,18 +50,18 @@
   "devDependencies": {
     "@babel/core": "^7.8.0",
     "@babel/plugin-proposal-class-properties": "7.14.5",
-    "@babel/preset-react": "^7.14.5",
+    "@babel/preset-react": "^7.27.1",
     "@tarojs/cli": "3.6.20",
     "@tarojs/webpack5-runner": "3.6.20",
     "@types/webpack-env": "^1.13.6",
     "babel-preset-taro": "3.6.20",
     "eslint": "^8.12.0",
     "eslint-config-taro": "3.6.20",
+    "eslint-plugin-import": "^2.12.0",
     "eslint-plugin-react": "^7.8.2",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "eslint-plugin-import": "^2.12.0",
     "sass": "^1.62.1",
     "stylelint": "^14.4.0",
     "webpack": "5.78.0"
   }
-} 
+}

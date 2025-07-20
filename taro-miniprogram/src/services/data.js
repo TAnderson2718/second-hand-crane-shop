@@ -304,4 +304,51 @@ export const getUserPosts = () => {
     console.error('获取用户发布列表失败:', error)
     return []
   }
+}
+
+// 发布新商品
+export const publishListing = (listingData) => {
+  try {
+    // 生成新的ID
+    const newId = Math.max(...mockListings.map(l => l.id)) + 1
+    
+    // 创建新的商品对象
+    const newListing = {
+      id: newId,
+      title: `${listingData.brand} ${listingData.type} - ${listingData.tonnage}吨`,
+      tags: ["个人发布"],
+      type: listingData.type,
+      brand: listingData.brand,
+      tonnage: parseInt(listingData.tonnage),
+      manufacture_date: listingData.manufacture_date,
+      post_date: "刚刚发布",
+      location: `${listingData.province} ${listingData.city}`,
+      price: listingData.price,
+      phone: listingData.phone,
+      images: listingData.images || [
+        "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?q=80&w=800&h=600&fit=crop"
+      ],
+      work_hours: parseInt(listingData.work_hours) || 0,
+      mileage: parseInt(listingData.mileage) || 0,
+      contact_person: listingData.contact_person,
+      status: 'selling',
+      emission: listingData.emission,
+      description: listingData.description
+    }
+    
+    // 添加到主列表
+    mockListings.unshift(newListing)
+    
+    // 添加到用户发布列表
+    mockMyPosts.unshift({
+      id: newId,
+      status: 'selling',
+      title: newListing.title
+    })
+    
+    return newListing
+  } catch (error) {
+    console.error('发布商品失败:', error)
+    throw error
+  }
 };       

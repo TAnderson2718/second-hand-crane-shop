@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import { View, Text, Input, Textarea, Button, Picker, Image } from '@tarojs/components'
 import Taro from '@tarojs/taro'
-import { chinaLocations, equipmentData, emissionOptions } from '../../services/data'
+import { chinaLocations, equipmentData, emissionOptions, publishListing } from '../../services/data'
 import { showToast, showLoading, hideLoading, chooseImage, navigateBack } from '../../utils'
 import './post.scss'
 
@@ -220,7 +220,17 @@ export default class Post extends Component {
     showLoading('发布中...')
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      const { formData, images } = this.state
+      
+      // 准备发布数据
+      const listingData = {
+        ...formData,
+        images: images
+      }
+      
+      // 调用发布函数
+      const newListing = publishListing(listingData)
+      console.log('新商品发布成功:', newListing)
       
       showToast('发布成功')
       setTimeout(() => {

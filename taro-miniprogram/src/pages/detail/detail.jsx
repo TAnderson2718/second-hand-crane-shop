@@ -19,7 +19,8 @@ export default class Detail extends Component {
 
   loadListingDetail = async () => {
     try {
-      const { id } = this.$router.params
+      const router = Taro.getCurrentInstance().router
+      const { id } = router.params
       if (!id) {
         throw new Error('商品ID不能为空')
       }

@@ -1,3 +1,5 @@
+import Taro from '@tarojs/taro'
+
 // 工具函数 - 复用原有HTML项目的逻辑
 
 // 解析发布时间文本为数字（天数），用于排序
@@ -57,7 +59,7 @@ export function generateSerialNumber(id) {
 export function showToast(title, icon = 'success') {
   try {
     return new Promise((resolve) => {
-      wx.showToast({
+      Taro.showToast({
         title,
         icon,
         duration: 2000,
@@ -77,7 +79,7 @@ export function showToast(title, icon = 'success') {
 // 显示加载中
 export function showLoading(title = '加载中...') {
   try {
-    return wx.showLoading({
+    return Taro.showLoading({
       title,
       mask: true
     });
@@ -89,7 +91,7 @@ export function showLoading(title = '加载中...') {
 // 隐藏加载中
 export function hideLoading() {
   try {
-    return wx.hideLoading();
+    return Taro.hideLoading();
   } catch (error) {
     console.error('隐藏Loading失败:', error)
   }
@@ -99,7 +101,7 @@ export function hideLoading() {
 export function showModal(title, content) {
   try {
     return new Promise((resolve) => {
-      wx.showModal({
+      Taro.showModal({
         title,
         content,
         success: (res) => {
@@ -125,7 +127,7 @@ export function makePhoneCall(phoneNumber) {
   
   try {
     return new Promise((resolve, reject) => {
-      wx.makePhoneCall({
+      Taro.makePhoneCall({
         phoneNumber,
         success: resolve,
         fail: (error) => {
@@ -147,7 +149,7 @@ export function previewImage(current, urls) {
   }
   
   try {
-    return wx.previewImage({
+    return Taro.previewImage({
       current,
       urls
     });
@@ -165,7 +167,7 @@ export function chooseImage(count = 9) {
   
   try {
     return new Promise((resolve, reject) => {
-      wx.chooseImage({
+      Taro.chooseImage({
         count,
         sizeType: ['original', 'compressed'],
         sourceType: ['album', 'camera'],
@@ -186,7 +188,7 @@ export function chooseImage(count = 9) {
 export function getLocation() {
   try {
     return new Promise((resolve, reject) => {
-      wx.getLocation({
+      Taro.getLocation({
         type: 'wgs84',
         success: resolve,
         fail: (error) => {
@@ -205,7 +207,7 @@ export function getLocation() {
 export function chooseLocation() {
   try {
     return new Promise((resolve, reject) => {
-      wx.chooseLocation({
+      Taro.chooseLocation({
         success: resolve,
         fail: (error) => {
           console.error('选择位置失败:', error)
@@ -227,7 +229,7 @@ export function setStorage(key, data) {
   
   try {
     return new Promise((resolve, reject) => {
-      wx.setStorage({
+      Taro.setStorage({
         key,
         data,
         success: resolve,
@@ -251,7 +253,7 @@ export function getStorage(key) {
   
   try {
     return new Promise((resolve, reject) => {
-      wx.getStorage({
+      Taro.getStorage({
         key,
         success: (res) => resolve(res.data),
         fail: (error) => {
@@ -274,7 +276,7 @@ export function removeStorage(key) {
   
   try {
     return new Promise((resolve, reject) => {
-      wx.removeStorage({
+      Taro.removeStorage({
         key,
         success: resolve,
         fail: (error) => {
@@ -374,7 +376,7 @@ export function deepClone(obj) {
 export function getNetworkType() {
   try {
     return new Promise((resolve, reject) => {
-      wx.getNetworkType({
+      Taro.getNetworkType({
         success: resolve,
         fail: (error) => {
           console.error('获取网络状态失败:', error)
@@ -391,7 +393,7 @@ export function getNetworkType() {
 // 页面跳转
 export function navigateTo(url) {
   try {
-    return wx.navigateTo({ url });
+    return Taro.navigateTo({ url });
   } catch (error) {
     console.error('页面跳转失败:', error)
     throw error
@@ -400,7 +402,7 @@ export function navigateTo(url) {
 
 export function redirectTo(url) {
   try {
-    return wx.redirectTo({ url });
+    return Taro.redirectTo({ url });
   } catch (error) {
     console.error('页面重定向失败:', error)
     throw error
@@ -409,7 +411,7 @@ export function redirectTo(url) {
 
 export function switchTab(url) {
   try {
-    return wx.switchTab({ url });
+    return Taro.switchTab({ url });
   } catch (error) {
     console.error('切换Tab失败:', error)
     throw error
@@ -418,7 +420,7 @@ export function switchTab(url) {
 
 export function navigateBack(delta = 1) {
   try {
-    return wx.navigateBack({ delta });
+    return Taro.navigateBack({ delta });
   } catch (error) {
     console.error('返回上一页失败:', error)
     throw error

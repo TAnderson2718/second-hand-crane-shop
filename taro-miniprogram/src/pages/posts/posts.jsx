@@ -2,7 +2,7 @@ import { Component } from 'react'
 import { View, Text, Image, Button, ScrollView } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { getUserPosts } from '../../services/data'
-import { formatPrice, showToast, navigateTo } from '../../utils'
+import { formatPrice, showToast, navigateTo, switchTab } from '../../utils'
 import './posts.scss'
 
 export default class Posts extends Component {
@@ -53,7 +53,7 @@ export default class Posts extends Component {
 
   goToPost = () => {
     try {
-      navigateTo('/pages/post/post')
+      switchTab('/pages/post/post')
     } catch (error) {
       console.error('页面跳转失败:', error)
       showToast('页面跳转失败', 'error')
